@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import OrderManager from '../path/to/OrderManager'; // Adjust this path
+import OrderManager from '../lib/order-manager';
 
 export default function ConfirmationPage() {
   const [order, setOrder] = useState(null);
