@@ -1,83 +1,84 @@
-document.addEventListener('DOMContentLoaded', () => {
-  console.log('Order confirmation page loaded');
+import { useEffect, useState } from 'react';
+import OrderManager from '../path/to/OrderManager'; // Adjust this path
 
-  // Get the last order ID from session storage
-  const orderId = sessionStorage.getItem('lastOrderId');
+export default function ConfirmationPage() {
+  const [order, setOrder] = useState(null);
 
-  if (!orderId) {
-    window.location.href = '/';
-    return;
-  }
+  useEffect(() => {
+    const orderId = sessionStorage.getItem('lastOrderId');
 
-  const order = OrderManager.getOrderById(orderId);
+    if (!orderId) {
+      window.location.href = '/';
+      return;
+    }
+
+    const fetchedOrder = OrderManager.getOrderById(orderId);
+
+    if (!fetchedOrder) {
+      window.location.href = '/';
+      return;
+    }
+
+    setOrder(fetchedOrder);
+    sessionStorage.removeItem('lastOrderId');
+  }, []);
 
   if (!order) {
-    window.location.href = '/';
-    return;
+    return <p>Loading order details...</p>;
   }
 
-  // Format date
   const formattedDate = new Date(order.date).toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
-    day: 'numeric'
-  });
-
-  // Populate Order Info
-  const orderInfoElement = document.getElementById('order-info');
-  orderInfoElement.innerHTML = `
-    <p><strong>Order ID:</strong> ${order.id}</p>
-    <p><strong>Date:</strong> ${formattedDate}</p>
-    <p><strong>Status:</strong> ${order.status}</p>
-  `;
-
-  // Populate Shipping Address
-  const shippingAddressElement = document.getElementById('shipping-address');
-  shippingAddressElement.innerHTML = `
-    <p>${order.shipping.fullName}</p>
-    <p>${order.shipping.address}</p>
-    <p>${order.shipping.city}, ${order.shipping.state} ${order.shipping.zip}</p>
-    <p>${order.shipping.country}</p>
-    <p>Phone: ${order.shipping.phone}</p>
-  `;
-
-  // Build Order Summary
-  const orderSummaryElement = document.getElementById('order-summary');
-  let summaryHtml = '<div>';
-
-  order.items.forEach(item => {
-    summaryHtml += `
-      <div>
-        <span>${item.product.name} × ${item.quantity}</span>
-        <span>$${(item.product.price * item.quantity).toFixed(2)}</span>
-      </div>
-    `;
+    day: 'numeric',
   });
 
   const tax = order.total * 0.08;
+  const totalWithTax = order.total + tax;
 
-  summaryHtml += `
+  return (
     <div>
-      <span>Subtotal:</span>
-      <span>$${order.total.toFixed(2)}</span>
-    </div>
-    <div>
-      <span>Shipping:</span>
-      <span>Free</span>
-    </div>
-    <div>
-      <span>Tax:</span>
-      <span>$${tax.toFixed(2)}</span>
-    </div>
-    <div>
-      <strong>Total:</strong>
-      <strong>$${(order.total + tax).toFixed(2)}</strong>
-    </div>
-  `;
+      <h1>Order Confirmation</h1>
 
-  summaryHtml += '</div>';
-  orderSummaryElement.innerHTML = summaryHtml;
+      <section id="order-info">
+        <p><strong>Order ID:</strong> {order.id}</p>
+        <p><strong>Date:</strong> {formattedDate}</p>
+        <p><strong>Status:</strong> {order.status}</p>
+      </section>
 
-  // Clear stored order ID
-  sessionStorage.removeItem('lastOrderId');
-});
+      <section id="shipping-address">
+        <p>{order.shipping.fullName}</p>
+        <p>{order.shipping.address}</p>
+        <p>{order.shipping.city}, {order.shipping.state} {order.shipping.zip}</p>
+        <p>{order.shipping.country}</p>
+        <p>Phone: {order.shipping.phone}</p>
+      </section>
+
+      <section id="order-summary">
+        {order.items.map((item, idx) => (
+          <div key={idx}>
+            <span>{item.product.name} × {item.quantity}</span>
+            <span>${(item.product.price * item.quantity).toFixed(2)}</span>
+          </div>
+        ))}
+
+        <div>
+          <span>Subtotal:</span>
+          <span>${order.total.toFixed(2)}</span>
+        </div>
+        <div>
+          <span>Shipping:</span>
+          <span>Free</span>
+        </div>
+        <div>
+          <span>Tax:</span>
+          <span>${tax.toFixed(2)}</span>
+        </div>
+        <div>
+          <strong>Total:</strong>
+          <strong>${totalWithTax.toFixed(2)}</strong>
+        </div>
+      </section>
+    </div>
+  );
+}
