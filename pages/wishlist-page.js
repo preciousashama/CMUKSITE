@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { WishlistManager } from '../lib/wishlist-manager'; // adjust if needed
 import { CartManager } from '../lib/cart-manager'; // adjust if needed
-import { products } from '../data/products'; // adjust if needed
+import { products } from '..lib/products-manager'; // adjust if needed
 
 export default function WishlistPage() {
   const [wishlistItems, setWishlistItems] = useState([]);
