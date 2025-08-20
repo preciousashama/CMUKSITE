@@ -3,6 +3,7 @@ node_modules
 node_modules/
 .env
 .env.local
+.next
 NEXTAUTH_SECRET=m9zxar9GuTbuTQsKNkEt
 /generated/prisma
-.next
+
