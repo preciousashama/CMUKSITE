@@ -1,0 +1,7 @@
+node_modules
+# Keep environment variables out of version control
+node_modules/
+.env
+.env.local
+NEXTAUTH_SECRET=m9zxar9GuTbuTQsKNkEt
+/generated/prisma

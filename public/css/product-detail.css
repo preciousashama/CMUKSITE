@@ -1,0 +1,462 @@
+/* ======================PRODUCT DETAIL PAGE STYLES ============================ */
+
+/* Back navigation link styling */
+.back-link {
+    padding: 1rem 2rem;
+}
+
+.back-link a {
+    color: #4CAF50;
+    text-decoration: none;
+}
+
+.back-link a:hover {
+    text-decoration: underline;
+}
+
+/* Main product detail container */
+.product-detail {
+    padding: 0 2rem 2rem;
+}
+
+/* Product detail layout - side by side image and info */
+.product-detail-container {
+    display: flex;
+    max-width: 1200px;
+    margin: 0 auto;
+    gap: 40px;
+    padding: 20px;
+}
+
+/* Product image section - left side */
+.product-detail-image {
+    flex: 1;
+    min-width: 300px;
+}
+
+.product-detail-image img {
+    max-width: 100%;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+/* Product information section - right side */
+.product-detail-info {
+    flex: 2;
+    min-width: 300px;
+}
+
+/* Product description section */
+.product-detail-description {
+    margin: 2rem 0;
+}
+
+.product-detail-description h2 {
+    margin-bottom: 0.5rem;
+}
+
+/* Purchase actions section (quantity, add to cart, etc.) */
+.product-detail-actions {
+    margin-top: 2rem;
+}
+
+.product-detail-actions label {
+    margin-right: 0.5rem;
+}
+
+.product-detail-actions input {
+    width: 60px;
+    padding: 0.5rem;
+    margin-right: 1rem;
+}
+
+/* =====================================================================
+  PRODUCT TITLE AND PRICING STYLES
+  Typography and styling for product names and prices
+===================================================================== */
+
+/* Product title styling for grid view */
+.product-title {
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+/* Product price styling for grid view */
+.product-price {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #4CAF50;
+    margin-bottom: 10px;
+}
+
+/* Product price styling for detail page - larger */
+.product-detail-price {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #4CAF50;
+    margin: 1rem 0;
+}
+
+/* Product category labels */
+.product-category {
+    color: #777;
+    font-size: 0.9rem;
+    margin-bottom: 15px;
+}
+
+.product-detail-category {
+    color: #777;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+}
+
+/* =====================================================================
+  COLOR SELECTION AND DISPLAY
+  Styles for color swatches and color selection options
+===================================================================== */
+
+/* Color display in product cards */
+.product-colors {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin: 5px 0;
+}
+
+/* Individual color swatch circles */
+.color-swatch {
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    border: 1px solid #ddd;
+}
+
+/* Color selection options for product detail page */
+.color-options {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.color-option label {
+    display: block;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid #ddd;
+    transition: all 0.3s ease;
+}
+
+.color-option.selected label {
+    border: 2px solid #000;
+    transform: scale(1.1);
+}
+
+.color-option input {
+    position: absolute;
+    opacity: 0;
+}
+
+/* =====================================================================
+  PRODUCT IMAGE AND PREVIEW AREAS
+  Styling for main product images and logo preview areas
+===================================================================== */
+
+/* Main product image container */
+.main-image-container {
+    position: relative;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 15px;
+}
+
+/* Logo preview overlay on product images */
+.logo-preview-area {
+    position: absolute;
+    top: 15%;
+    left: 60%;
+    border: 2px dashed #aaa;
+    padding: 10px 15px;
+    font-size: 0.8em;
+    color: #888;
+    text-align: center;
+    background-color: rgb(255 255 255 / 70%);
+    min-width: 80px;
+    box-sizing: border-box;
+}
+
+.logo-preview-area img {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+/* =====================================================================
+  SIZE AND QUANTITY SELECTION
+  Styles for size charts and quantity input fields
+===================================================================== */
+
+/* Size selection header with stock check link */
+.size-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.check-stock {
+    color: #333;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.check-stock:hover {
+    text-decoration: underline;
+}
+
+/* Size and quantity selection container */
+.size-quantity-container {
+    background-color: #fff;
+    padding: 20px;
+    margin-bottom: 20px;
+    border: 1px solid #000;
+}
+
+/* Size labels row */
+.size-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.size-label {
+    flex: 1;
+    text-align: center;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+/* Quantity input fields row */
+.quantity-inputs {
+    display: flex;
+    justify-content: space-between;
+}
+
+.quantity-input-wrapper {
+    flex: 1;
+    padding: 0 5px;
+}
+
+.size-quantity {
+    width: 100%;
+    height: 50px;
+    text-align: center;
+    font-size: 18px;
+    border: 1px solid #000;
+    padding: 5px;
+}
+
+/* =====================================================================
+  PRICING SUMMARY
+  Order total and pricing calculation display
+===================================================================== */
+
+.price-summary {
+    margin: 20px 0;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.unit-price, .sub-total {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+/* =====================================================================
+  PRODUCT OPTIONS AND VARIANTS
+  Styling for product option groups and variants
+===================================================================== */
+
+.option-group {
+    margin-bottom: 25px;
+    padding-bottom: 25px;
+    border-bottom: 1px solid #000;
+}
+
+.option-group:last-of-type {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: 0;
+}
+
+.option-group h3 {
+    font-size: 18px;
+    margin-bottom: 15px;
+}
+
+/* =====================================================================
+  TOAST NOTIFICATIONS
+  Pop-up notification styling for user feedback
+===================================================================== */
+
+#toast-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+.toast {
+    padding: 12px 20px;
+    margin: 10px 0;
+    border-radius: 4px;
+    color: white;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.3s ease forwards, fadeOut 0.5s ease forwards 2.5s;
+    min-width: 250px;
+}
+
+.toast.success {
+    background-color: #4CAF50;
+}
+
+.toast.error {
+    background-color: #f44336;
+}
+
+.toast.info {
+    background-color: #2196F3;
+}
+
+.toast.default {
+    background-color: #333;
+}
+
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeOut {
+    to {
+        opacity: 0;
+    }
+}
+
+/* =====================================================================
+  SORT AND DISPLAY OPTIONS
+  Controls for sorting products and changing display options
+===================================================================== */
+
+/* Container for sort and display controls */
+.sort-by-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+/* Sort dropdown styling */
+.sort-options,
+.items-per-page {
+    display: flex;
+    align-items: center;
+}
+
+.sort-options label,
+.items-per-page label {
+    margin-right: 10px;
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.sort-options select,
+.items-per-page select {
+    padding: 5px 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 0.9rem;
+}
+
+/* View toggle buttons (grid/list view) */
+.view-options {
+    display: flex;
+    gap: 5px;
+}
+
+.view-btn {
+    background: none;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 5px 8px;
+    cursor: pointer;
+    color: #555;
+}
+
+.view-btn.active {
+    background-color: #f0f0f0;
+}
+
+/* =====================================================================
+  IMAGE UPLOAD AND PREVIEW
+  Styling for user-uploaded images and previews
+===================================================================== */
+
+.image-preview {
+    margin-top: 0.5rem;
+    max-width: 300px;
+}
+
+.image-preview img {
+    max-width: 100%;
+    max-height: 200px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+}
+
+.image-preview .error {
+    color: #f44336;
+    font-size: 0.9rem;
+}
+
+.review-image {
+    margin: 1rem 0;
+}
+
+.review-image img {
+    max-width: 100%;
+    max-height: 300px;
+    border-radius: 4px;
+}
+#uploaded-artwork.left {
+  top: 20%;
+  left: 10%;
+}
+
+#uploaded-artwork.right {
+  top: 20%;
+  right: 10%;
+}
+
+#uploaded-artwork.centre {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+#uploaded-artwork.bottom-right {
+  bottom: 10%;
+  right: 10%;
+}
+
+#uploaded-artwork.bottom-left {
+  bottom: 10%;
+  left: 10%;
+}
