@@ -1,12 +1,6 @@
 'use client';
 import { useEffect } from 'react';
 import Head from 'next/head';
-import '/public/css/global.css';
-import '/public/css/components.css';
-import '/public/css/header.css';
-import '/public/css/footer.css';
-import '/public/css/all-reviews.css';
-import '/public/css/responsive.css';
 
 export default function AllReviewsPage() {
   useEffect(() => {
