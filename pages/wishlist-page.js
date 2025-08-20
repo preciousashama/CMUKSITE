@@ -1,55 +1,59 @@
-// pages/wishlist-page.js
-
 import { useEffect, useState } from 'react';
-import { WishlistManager } from '../lib/wishlist-manager'; // adjust if needed
-import { CartManager } from '../lib/cart-manager'; // adjust if needed
-import { products } from '../lib/products-manager'; // adjust if needed
+import { useCart } from '../lib/cart-manager';
+import { WishlistManager } from '../lib/wishlist-manager'; // Ensure this path is correct
 
 export default function WishlistPage() {
   const [wishlistItems, setWishlistItems] = useState([]);
+  const { addToCart } = useCart();
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const items = WishlistManager.getWishlist();
-      setWishlistItems(items);
-    }
+    const items = WishlistManager.getWishlist();
+    setWishlistItems(items);
   }, []);
 
   const handleAddToCart = (productId) => {
-    CartManager.addToCart(productId, 1);
-    const product = products.find(p => p.id === productId);
-    if (product) {
-      alert(`${product.name} has been added to your cart!`);
-    }
+    addToCart(productId, 1);
+    alert('Product added to cart!');
   };
 
   const handleRemoveFromWishlist = (productId) => {
     WishlistManager.removeFromWishlist(productId);
-    const updatedItems = WishlistManager.getWishlist();
-    setWishlistItems(updatedItems);
+    setWishlistItems(WishlistManager.getWishlist());
   };
 
   if (wishlistItems.length === 0) {
     return (
-      <div className="empty-wishlist">
+      <div>
         <p>Your wishlist is empty.</p>
-        <a href="/products" className="btn">Go Shopping</a>
+        <a href="/products">Go Shopping</a>
       </div>
     );
   }
 
   return (
     <div className="product-grid">
-      {wishlistItems.map(product => (
-        <div className="product-card" key={product.id}>
+      {wishlistItems.map((product) => (
+        <div key={product.id} className="product-card">
           <img src={product.image} alt={product.name} />
           <h3>{product.name}</h3>
           <p className="product-price">${product.price.toFixed(2)}</p>
           <p className="product-category">Category: {product.category}</p>
           <div className="product-actions">
-            <a href={`/product-detail?id=${product.id}`} className="btn view-btn">View Details</a>
-            <button className="btn add-to-cart-btn" onClick={() => handleAddToCart(product.id)}>Add to Cart</button>
-            <button className="btn remove-wishlist-btn" onClick={() => handleRemoveFromWishlist(product.id)}>Remove</button>
+            <a href={`/product-detail?id=${product.id}`} className="btn view-btn">
+              View Details
+            </a>
+            <button
+              className="btn add-to-cart-btn"
+              onClick={() => handleAddToCart(product.id)}
+            >
+              Add to Cart
+            </button>
+            <button
+              className="btn remove-wishlist-btn"
+              onClick={() => handleRemoveFromWishlist(product.id)}
+            >
+              Remove
+            </button>
           </div>
         </div>
       ))}
