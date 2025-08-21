@@ -7,7 +7,7 @@ import '../public/css/index.css';
 import '../public/css/responsive.css';
 
 import { SessionProvider } from 'next-auth/react';
-import { CartProvider } from '..lib/CartContext.js';
+import { CartProvider } from '../lib/CartContext.js';
 
 export default function MyApp({ Component, pageProps: { session, ...pageProps } }) {
   return (
