@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 // Replace with your actual products data import
-import { products } from '../lib/products-manager';
+import { products } from '../data/products';
 
 
 // Stub WishlistManager and CartManager hooks for demo
