@@ -16,3 +16,14 @@ export async function getServerSideProps(context) {
     props: { session },
   };
 }
+
+// Add a React component as default export
+export default function Dashboard({ session }) {
+  return (
+    <div>
+      <h1>Welcome to your Dashboard</h1>
+      <p>Hello, {session.user.name || 'User'}!</p>
+      {/* Your dashboard content here */}
+    </div>
+  );
+}
