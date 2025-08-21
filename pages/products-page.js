@@ -1,9 +1,8 @@
-// pages/products.js
 import { useEffect, useState, useMemo } from 'react';
-import { products } from '../lib/products-manager';
+import products from '../data/products';
 
 export default function ProductsPage() {
-  const [products] = useState(productsData || []);
+  const [productList] = useState(products || []);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [selectedSizes, setSelectedSizes] = useState([]);
   const [selectedColors, setSelectedColors] = useState([]);
@@ -23,39 +22,39 @@ export default function ProductsPage() {
   };
 
   const filteredProducts = useMemo(() => {
-    let result = [...products];
+  let result = [...productList];
 
-    if (selectedCategories.length) {
-      result = result.filter(p => {
-        const cat = p.category;
-        return Array.isArray(cat)
-          ? cat.some(c => selectedCategories.includes(c))
-          : selectedCategories.includes(cat);
-      });
-    }
+  if (selectedCategories.length) {
+    result = result.filter(p => {
+      const cat = p.category;
+      return Array.isArray(cat)
+        ? cat.some(c => selectedCategories.includes(c))
+        : selectedCategories.includes(cat);
+    });
+  }
 
-    if (selectedSizes.length) {
-      result = result.filter(p => {
-        const sz = p.size;
-        return Array.isArray(sz)
-          ? sz.some(s => selectedSizes.includes(s))
-          : selectedSizes.includes(sz);
-      });
-    }
+  if (selectedSizes.length) {
+    result = result.filter(p => {
+      const sz = p.size;
+      return Array.isArray(sz)
+        ? sz.some(s => selectedSizes.includes(s))
+        : selectedSizes.includes(sz);
+    });
+  }
 
-    if (selectedColors.length) {
-      result = result.filter(p => {
-        const cl = p.colors || (p.color ? [p.color] : []);
-        return cl.some(c => selectedColors.includes(c));
-      });
-    }
+  if (selectedColors.length) {
+    result = result.filter(p => {
+      const cl = p.colors || (p.color ? [p.color] : []);
+      return cl.some(c => selectedColors.includes(c));
+    });
+  }
 
-    if (sortBy === 'price-low') result.sort((a, b) => a.price - b.price);
-    else if (sortBy === 'price-high') result.sort((a, b) => b.price - a.price);
-    else if (sortBy === 'name') result.sort((a, b) => a.name.localeCompare(b.name));
+  if (sortBy === 'price-low') result.sort((a, b) => a.price - b.price);
+  else if (sortBy === 'price-high') result.sort((a, b) => b.price - a.price);
+  else if (sortBy === 'name') result.sort((a, b) => a.name.localeCompare(b.name));
 
-    return result;
-  }, [products, selectedCategories, selectedSizes, selectedColors, sortBy]);
+  return result;
+}, [productList, selectedCategories, selectedSizes, selectedColors, sortBy]);
 
   const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
   const paginated = filteredProducts.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
