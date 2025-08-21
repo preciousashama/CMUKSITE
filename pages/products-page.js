@@ -1,5 +1,6 @@
 import { useEffect, useState, useMemo } from 'react';
-import products from '../data/products';
+import { products } from '../data/products'; 
+
 
 export default function ProductsPage() {
   const [productList] = useState(products || []);
@@ -85,31 +86,31 @@ export default function ProductsPage() {
   };
 
   const allCategories = useMemo(() => {
-    const set = new Set();
-    products.forEach(p => {
-      if (Array.isArray(p.category)) p.category.forEach(c => set.add(c));
-      else if (p.category) set.add(p.category);
-    });
-    return [...set];
-  }, [products]);
+  const set = new Set();
+  (products || []).forEach(p => {
+    if (Array.isArray(p.category)) p.category.forEach(c => set.add(c));
+    else if (p.category) set.add(p.category);
+  });
+  return [...set];
+}, []);
 
   const allSizes = useMemo(() => {
-    const set = new Set();
-    products.forEach(p => {
-      if (Array.isArray(p.size)) p.size.forEach(s => set.add(s));
-      else if (p.size) set.add(p.size);
-    });
-    return [...set];
-  }, [products]);
+   const set = new Set();
+  (products || []).forEach(p => {
+    if (Array.isArray(p.category)) p.category.forEach(c => set.add(c));
+    else if (p.category) set.add(p.category);
+  });
+  return [...set];
+}, []);
 
   const allColors = useMemo(() => {
-    const set = new Set();
-    products.forEach(p => {
-      if (Array.isArray(p.colors)) p.colors.forEach(c => set.add(c));
-      else if (p.color) set.add(p.color);
-    });
-    return [...set];
-  }, [products]);
+   const set = new Set();
+  (products || []).forEach(p => {
+    if (Array.isArray(p.category)) p.category.forEach(c => set.add(c));
+    else if (p.category) set.add(p.category);
+  });
+  return [...set];
+}, []);
 
   const formatPrice = p => `£${p.toFixed(2)}`;
 

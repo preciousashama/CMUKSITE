@@ -1,19 +1,20 @@
-import { useEffect, useState } from 'react';
-import { useCart } from '../lib/cart-manager';
+// pages/wishlist.js
+import { useEffect, useState, useContext } from 'react';
 import { WishlistManager, initWishlistManager } from '../lib/wishlist-manager';
+import { CartContext } from '../lib/CartContext';
 
 export default function WishlistPage() {
   const [wishlistItems, setWishlistItems] = useState([]);
-  const { addToCart } = useCart();
+  const { addToCart } = useContext(CartContext);
 
   useEffect(() => {
-  initWishlistManager(); // Ensures safe loading on client side
-  const items = WishlistManager.getWishlist();
-  setWishlistItems(items);
-}, []);
+    initWishlistManager(); // Ensures safe loading on client side
+    const items = WishlistManager.getWishlist();
+    setWishlistItems(items);
+  }, []);
 
   const handleAddToCart = (productId) => {
-    addToCart(productId, 1);
+    addToCart(productId, 1); // You may need to define quantity inside addToCart
     alert('Product added to cart!');
   };
 
@@ -37,7 +38,7 @@ export default function WishlistPage() {
         <div key={product.id} className="product-card">
           <img src={product.image} alt={product.name} />
           <h3>{product.name}</h3>
-          <p className="product-price">${product.price.toFixed(2)}</p>
+          <p className="product-price">£{product.price.toFixed(2)}</p>
           <p className="product-category">Category: {product.category}</p>
           <div className="product-actions">
             <a href={`/product-detail?id=${product.id}`} className="btn view-btn">
