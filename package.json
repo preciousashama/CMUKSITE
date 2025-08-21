@@ -9,7 +9,7 @@
     "lint": "eslint . && stylelint \"**/*.css\"",
     "lint:fix": "eslint . --fix && stylelint \"**/*.css\" --fix",
     "build": "next build",
-    "postbuild": "nextsitemap"
+    "postbuild": "npx next-sitemap"
   },
   "keywords": [],
   "author": "",
