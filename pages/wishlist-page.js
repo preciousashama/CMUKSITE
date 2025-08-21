@@ -1,15 +1,16 @@
 import { useEffect, useState } from 'react';
 import { useCart } from '../lib/cart-manager';
-import { WishlistManager } from '../lib/wishlist-manager'; // Ensure this path is correct
+import { WishlistManager, initWishlistManager } from '../lib/wishlist-manager';
 
 export default function WishlistPage() {
   const [wishlistItems, setWishlistItems] = useState([]);
   const { addToCart } = useCart();
 
   useEffect(() => {
-    const items = WishlistManager.getWishlist();
-    setWishlistItems(items);
-  }, []);
+  initWishlistManager(); // Ensures safe loading on client side
+  const items = WishlistManager.getWishlist();
+  setWishlistItems(items);
+}, []);
 
   const handleAddToCart = (productId) => {
     addToCart(productId, 1);
