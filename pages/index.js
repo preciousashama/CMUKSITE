@@ -3,6 +3,8 @@ import { useEffect } from 'react';
 import Head from 'next/head';
 import Header from 'components/header';
 import Footer from 'components/footer';
+import ProductDisplay from '../components/ProductDisplay';
+
 
 export default function HomePage() {
   useEffect(() => {
@@ -187,6 +189,8 @@ export default function HomePage() {
             <a href="/party-occasions" className="product-item"><img src="/assets/Thumnails/Party Thumbnail.png" alt="Party" /></a>
           </div>
         </section>
+
+        <ProductDisplay />
 
         {/* Reviews */}
         <section className="reviews-section" id="reviews">

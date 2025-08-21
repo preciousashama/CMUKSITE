@@ -1,4 +1,4 @@
-// lib/productManager.js
+// src/data/products.js
 
 // Utility function to format prices in GBP
 export function formatPrice(price) {
@@ -236,16 +236,16 @@ export const products = [
     image: "/assets/Bags/paper-small.png",
     category: "Bags",
     colors: ["Black", "White", "Red", "Blue"],
-type: ["Matt", "Glossy"]
-},
-{
-id: 24,
-name: "Extra Small Paper Bags",
-price: 7.99,
-description: "Extra small paper bags available in matt or glossy finish.",
-image: "/assets/Bags/paper-xs.png",
-category: "Bags",
-colors: ["Black", "White", "Red", "Blue"],
-type: ["Matt", "Glossy"]
+    type: ["Matt", "Glossy"]
+ },
+ {
+    id: 24,
+    name: "Extra Small Paper Bags",
+    price: 7.99,
+    description: "Extra small paper bags available in matt or glossy finish.",
+    image: "/assets/Bags/paper-xs.png",
+    category: "Bags",
+    colors: ["Black", "White", "Red", "Blue"],
+    type: ["Matt", "Glossy"]
 }
 ];
