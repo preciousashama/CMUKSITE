@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import { products } from '../lib/products-manager';
+import { products } from '../data/products';
 import Link from 'next/link';
 
 export default function SearchPage() {

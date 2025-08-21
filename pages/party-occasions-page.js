@@ -1,7 +1,7 @@
 // pages/party.js
 import { useState, useEffect } from 'react';
 
-import { products } from '../lib/products-manager';
+import { products } from '../data/products';
 
 export default function PartyPage() {
   // Filters state
