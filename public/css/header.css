@@ -92,7 +92,7 @@
 .header-icons span,
 .header-icons a {
     font-size: 0.9em;
-    font-weight: 400;
+    font-weight: 200;
     white-space: nowrap;
     color: #000;
     font-family: 'Poppins', sans-serif;
@@ -185,7 +185,6 @@
     max-height: 400px;
     overflow-y: auto;
     z-index: 9999;
-    display: none;
 }
 
 .search-results::-webkit-scrollbar {
@@ -304,11 +303,10 @@
   display: flex;
   flex-direction: row;
     background-color: rgba(255, 255, 255, 0.95);
-  padding: 20px 30px;
+  padding: 20px 20px;
   border-radius: 5px;
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
   z-index: 1000;
-  gap: 20px;
   display: none;
   min-width: 675px;     
   max-width: 90vw;
@@ -327,7 +325,7 @@
   font-weight: 600;
   font-size: 14px;
   margin-bottom: 10px;
-  color: #000;
+  color: #000000;
   display: block;
   pointer-events: none;
 }
@@ -345,7 +343,7 @@
 .dropdown-section li a {
   text-decoration: none;
   color: #000;
-  font-size: 14px;
+  font-size: 12px;
   transition: color 0.2s ease;
 }
 
