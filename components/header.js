@@ -50,7 +50,7 @@ export default function Header() {
       <div className="header-main">
         <div className="header-left logo">
           <Link href="/">
-            <img src="assets/icon.png" alt="Logo" />
+            <img src="/assets/icon.png" alt="Logo" />
           </Link>
         </div>
 
@@ -186,8 +186,8 @@ export default function Header() {
           </li>
 
           {/* Other nav items */}
-          <li className="nav-item"><Link href="/Design Artwork">Design Artwork</Link></li>
-          <li className="nav-item"><Link href="/Send Items In">Send Items In</Link></li>
+          <li className="nav-item"><Link href="pages/designservice.js">Design Artwork</Link></li>
+          <li className="nav-item"><Link href="/send">Send Items In</Link></li>
           <li className="nav-item"><Link href="/Installation">Installation</Link></li>
           <li className="nav-item"><Link href="/Subscriptions">Subscriptions</Link></li>
           <li className="nav-item"><Link href="/Gallery">Gallery</Link></li>

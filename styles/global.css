@@ -1,0 +1,291 @@
+/* =================== GLOBAL RESETS & BASIC STYLES =================== */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    max-width: 100%;
+}
+
+html {
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+    max-width: 100%;
+}
+
+body {
+    font-family: Inter, Arial, sans-serif;
+    line-height: 1.6;
+    color: #000; /* Accent color: Black */
+    background-color: #fff; /* Main color: White */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+    max-width: 100%;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 40px;
+    width: 100%;
+    background-color: #fff; /* Main color */
+}
+
+/* =================== GLOBAL IMAGE PLACEHOLDERS =================== */
+.placeholder-img {
+    background-color: #fff; /* Main color */
+    border: 1px solid #000; /* Accent color */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #000; /* Accent color */
+    font-size: 0.8em;
+    font-weight: 700;
+    text-align: center;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    max-width: 100%;
+}
+
+.placeholder-img.large- {
+    min-height: 400px;
+    max-height: 70vh;
+    aspect-ratio: 16 / 6;
+    border: none;
+    background-color: #000; /* Accent */
+    color: #fff; /* Main color */
+    font-size: 2em;
+    letter-spacing: 2px;
+}
+
+.placeholder-img.large- span {
+    max-width: 80%;
+}
+
+.placeholder-img.small {
+    aspect-ratio: 1 / 1;
+}
+
+/* =================== FORM COMPONENTS =================== */
+.btn, .primary-btn {
+    display: inline-block;
+    background-color: #000; /* Accent */
+    color: #fff; /* Main */
+    padding: 0.75rem 1.5rem;
+    border: 1px solid #000; /* Accent */
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    text-align: center;
+}
+
+.btn:hover, .primary-btn:hover {
+    background-color: #000;
+    opacity: 1;
+}
+
+.btn-secondary, .secondary-btn {
+    background-color: #ccc; /* Secondary */
+    border-color: #ccc;
+    color: #000; /* Accent */
+}
+
+.btn-secondary:hover, .secondary-btn:hover {
+    background-color: #bfbfbf; /* Slightly darker secondary */
+}
+
+input, select, textarea {
+    font-family: inherit;
+    font-size: 0.95em;
+    padding: 0.75rem;
+    border: 1px solid #ccc; /* Secondary */
+    border-radius: 4px;
+}
+
+input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: #000; /* Accent */
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+}
+
+/* =================== MESSAGE COMPONENTS =================== */
+.message, .review-message {
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+    border-radius: 4px;
+    text-align: center;
+}
+
+.message.error, .review-message.error {
+    background-color: #f5f5f5; /* Neutral background */
+    color: #000; /* Accent */
+    border: 1px solid #ccc; /* Secondary */
+}
+
+.message.success, .review-message.success {
+    background-color: #f0f0f0; /* Neutral/secondary */
+    color: #000; /* Accent */
+    border: 1px solid #ccc;
+}
+
+/* =================== GLOBAL TYPOGRAPHY =================== */
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 700;
+    line-height: 1.3;
+    margin-bottom: 0.5em;
+    color: #000; /* Accent */
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+    transition: opacity 0.3s ease;
+}
+
+a:hover {
+    opacity: 0.7;
+}
+
+ul {
+    list-style: none;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* =================== FILTERS SIDEBAR =================== */
+.filters-sidebar {
+    width: 200px;
+    flex-shrink: 0;
+    background-color: #f5f5f5; /* Light gray secondary */
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle accent */
+    height: fit-content;
+}
+
+.filter-group {
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #ccc; /* Secondary */
+    position: relative;
+}
+
+.filter-group:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.filter-header {
+    margin-bottom: 15px;
+    display: block;
+    width: 100%;
+}
+
+.filter-header h3 {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin: 0 0 10px;
+    text-transform: uppercase;
+    color: #000; /* Accent */
+    display: block;
+    width: 100%;
+    position: relative;
+}
+
+.filter-options {
+    clear: both;
+    margin-top: 10px;
+    margin-left: 15px;
+    display: block;
+    width: 100%;
+}
+
+.filter-option {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+    width: 100%;
+}
+
+.filter-option input[type="checkbox"] {
+    margin-right: 8px;
+    width: 16px;
+    height: 16px;
+    accent-color: #000; /* Accent */
+}
+
+.filter-option label {
+    font-size: 0.95rem;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    cursor: pointer;
+    align-items: center;
+    color: #000; /* Accent */
+    line-height: 1.3;
+}
+
+.count {
+    color: #888; /* Tertiary grey */
+    font-size: 0.85rem;
+    margin-left: auto;
+    text-align: right;
+}
+
+/* =================== PAGINATION CONTROLS =================== */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin: 30px 0;
+}
+
+.page-item {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 35px;
+    height: 35px;
+    border: 1px solid #ccc; /* Secondary */
+    border-radius: 6px;
+    text-decoration: none;
+    color: #000; /* Accent */
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+
+.page-item.active {
+    background-color: #000; /* Accent */
+    color: #fff; /* Main */
+    border-color: #000;
+}
+
+.page-item:hover:not(.active) {
+    background-color: #f0f0f0; /* Secondary */
+    border-color: #ccc;
+}
+
+.page-separator {
+    color: #aaa; /* Light grey */
+    padding: 0 5px;
+}

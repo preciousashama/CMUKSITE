@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import Head from 'next/head';
 import ProductDisplay from '../components/ProductDisplay';
 
+
 export default function HomePage() {
   useEffect(() => {
     // Your animation and slider setup here (unchanged)
@@ -17,17 +18,13 @@ export default function HomePage() {
         <div className="main-image-slider">
           <div className="slider-container">
             <div className="slide"><img src="/assets/images/shopproducts.png" alt="Slide 1" /></div>
-            <div className="slide"><img src="/assets/images/shopservices.png" alt="Slide 2" /></div>
-            <div className="slide"><img src="/assets/images/subscriptions.png" alt="Slide 3" /></div>
-            <div className="slide"><img src="/assets/images/shopproducts.png" alt="Slide 1 duplicate" /></div>
-            <div className="slide"><img src="/assets/images/shopservices.png" alt="Slide 2 duplicate" /></div>
           </div>
         </div>
 
         {/* Best Sellers */}
         <section className="best-sellers-section" id="best-sellers">
           <div className="best-sellers-title">
-            <h1>BESTSELLERS</h1>
+            <h1></h1>
           </div>
           <div className="best-sellers-images">
             <a href="/apparel" className="product-item"><img src="/assets/Thumnails/Apparel Thumbnail.png" alt="Apparel" /></a>
@@ -35,8 +32,6 @@ export default function HomePage() {
             <a href="/party-occasions" className="product-item"><img src="/assets/Thumnails/Party Thumbnail.png" alt="Party" /></a>
           </div>
         </section>
-
-        <ProductDisplay />
 
         {/* Reviews */}
         <section className="reviews-section" id="reviews">

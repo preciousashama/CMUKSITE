@@ -32,20 +32,10 @@
       "static/chunks/main.js",
       "static/chunks/pages/_error.js"
     ],
-    "/account": [
+    "/send": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/account.js"
-    ],
-    "/cart": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/cart.js"
-    ],
-    "/wishlist": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/wishlist.js"
+      "static/chunks/pages/send.js"
     ]
   },
   "ampFirstPages": []

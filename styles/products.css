@@ -1,0 +1,205 @@
+/* =====================================================================
+  MAIN PRODUCTS PAGE LAYOUT
+  Layout structure for the products listing page
+===================================================================== */
+
+/* Main container for products page - sidebar + content */
+.products-main-area {
+    display: flex;
+    gap: 20px; /* Reduced gap for tighter layout */
+}
+
+/* =====================================================================
+  PRODUCT CARDS AND ACTIONS
+  Styling for individual product cards and their action buttons
+===================================================================== */
+
+/* Product action buttons container */
+.product-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: auto;
+}
+
+/* View product details button */
+.view-product-btn {
+    padding: 10px 15px;
+    border-radius: 4px;
+    font-weight: bold;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    text-align: center;
+    font-size: 0.9rem;
+    background-color: #f0f0f0;
+    color: #333;
+    text-decoration: none;
+    border: 1px solid #ddd;
+}
+
+.view-product-btn:hover {
+    background-color: #e0e0e0;
+}
+
+/* Container for cart and wishlist buttons */
+.cart-wishlist-actions {
+    display: flex;
+    gap: 5px;
+}
+
+/* Add to cart button */
+.add-to-cart-btn {
+    flex-grow: 1;
+    padding: 10px 15px;
+    border-radius: 4px;
+    font-weight: bold;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    text-align: center;
+    font-size: 0.9rem;
+    background-color: #000;
+    color: white;
+    border: none;
+    width: 100%;
+}
+
+.add-to-cart-btn:hover {
+    background-color: #fff;
+    color: rgb(0 0 0);
+}
+
+/* Wishlist heart button */
+.wishlist-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 4px;
+    background-color: #f0f0f0;
+    border: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+    margin-top: 15px;
+}
+
+.wishlist-btn:hover {
+    background-color: #e0e0e0;
+}
+
+.wishlist-btn.active, .wishlist-btn.in-wishlist {
+    color: #ff6b6b;
+    background-color: #f5f5f5;
+}
+
+.wishlist-btn.active i {
+    font-weight: 900;
+}
+
+
+/* =====================================================================
+  PRODUCTS GRID - 3 COLUMN LAYOUT
+  Main content area with 3-column product grid
+===================================================================== */
+
+/* Products content area - takes remaining space */
+.products-content {
+    flex-grow: 1;
+    min-width: 0; /* Prevents flex item from overflowing */
+}
+
+/* Products grid container - 3 COLUMN LAYOUT */
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 equal columns */
+    gap: 20px; /* Space between product cards */
+    width: 100%;
+}
+
+/* Individual product card styling */
+
+/* FIXED PRODUCT CARDS - UNIFORM SIZING */
+.product-card {
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 15px;
+    transition: box-shadow 0.3s ease, transform 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    height: 100%; /* Ensures all cards have equal height */
+    min-height: 450px; /* ADD: Minimum height for consistency */
+}
+
+.product-card:hover {
+    box-shadow: 0 4px 12px rgb(0 0 0 / 10%);
+    transform: translateY(-2px);
+}
+
+/* Product image within card */
+.product-image {
+    width: 100%;
+    height: 200px; /* Fixed height for consistency */
+    overflow: hidden;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    flex-shrink: 0; /* ADD: Prevents image from shrinking */
+}
+
+.product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center; /* ADD: Centers the image */
+}
+
+/* No products message */
+.no-products-message {
+    grid-column: 1 / -1; /* Spans all 3 columns */
+    text-align: center;
+    padding: 40px;
+    color: #666;
+    font-size: 1.1rem;
+}
+
+/* =====================================================================
+  ADDITIONAL FIXES FOR UNIFORM PRODUCT CARD SIZING
+  Add this to the end of your CSS file
+===================================================================== */
+
+/* Fixed height for product titles - prevents cards from varying due to title length */
+.product-title {
+    height: 2.4em; /* Fixed height for 2 lines of text */
+    line-height: 1.2;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* Limits to 2 lines max */
+    -webkit-box-orient: vertical;
+}
+
+/* Fixed height for category area */
+.product-category {
+    height: 1.2em; /* Fixed height */
+    overflow: hidden;
+}
+
+/* Fixed height for color swatches area */
+.product-colors {
+    height: 20px; /* Fixed height */
+    margin-bottom: 15px;
+}
+
+/* Fixed height for price area */
+.product-price {
+    height: 1.5em; /* Fixed height */
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+/* Ensure product actions don't shrink and stay at bottom */
+.product-actions {
+    flex-shrink: 0; /* Prevents actions from shrinking */
+}

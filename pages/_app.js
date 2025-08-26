@@ -1,8 +1,9 @@
-import '../public/css/components.css';
-import '../public/css/global.css';
-import '../public/css/index.css';
-import '../public/css/header.css';
-import '../public/css/responsive.css';
+import '../styles/components.css';
+import '../styles/global.css';
+import '../styles/index.css';
+import '../styles/header.css';
+import '../styles/responsive.css';
+
 
 import Header from '../components/Header';
 import Footer from '../components/Footer';
