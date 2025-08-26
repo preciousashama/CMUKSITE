@@ -1,20 +1,22 @@
 // pages/_app.js
-import '../public/css/global.css';
 import '../public/css/components.css';
-import '../public/css/header.css';
-import '../public/css/footer.css';
+import '../styles/globals.css'
+import Header from '../components/header'
+import Footer from '../components/footer'
 import '../public/css/index.css';
 import '../public/css/responsive.css';
 
 import { SessionProvider } from 'next-auth/react';
 import { CartProvider } from '../lib/CartContext.js';
 
-export default function MyApp({ Component, pageProps: { session, ...pageProps } }) {
+export default function MyApp({ Component, pageProps }) {
   return (
-    <SessionProvider session={session}>
-      <CartProvider>
+    <>
+      <Header />
+      <main>
         <Component {...pageProps} />
-      </CartProvider>
-    </SessionProvider>
-  );
+      </main>
+      <Footer />
+    </>
+  )
 }
