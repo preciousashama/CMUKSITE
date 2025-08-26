@@ -1,1 +1,9 @@
-{"/_app":"pages/_app.js","/_error":"pages/_error.js","/404":"pages/404.html","/account":"pages/account.html","/all-reviews":"pages/all-reviews.html","/api/create-payment-intent":"pages/api/create-payment-intent.js","/api/users":"pages/api/users.js","/api/auth/[...nextauth]":"pages/api/auth/[...nextauth].js","/apparel-page":"pages/apparel-page.html","/confirmation":"pages/confirmation.html","/checkout":"pages/checkout.html","/cookie-policy":"pages/cookie-policy.html","/bags-page":"pages/bags-page.html","/cart-page":"pages/cart-page.html","/decals-page":"pages/decals-page.html","/gallery-page":"pages/gallery-page.html","/designservice":"pages/designservice.html","/":"pages/index.html","/load-products":"pages/load-products.html","/login-page":"pages/login-page.html","/labels-stickers-page":"pages/labels-stickers-page.html","/party-occasions-page":"pages/party-occasions-page.html","/privacy-policy":"pages/privacy-policy.html","/products-page":"pages/products-page.html","/product-detail":"pages/product-detail.html","/register-page":"pages/register-page.html","/search":"pages/search.html","/terms-and-conditions":"pages/terms-and-conditions.html","/wishlist-page":"pages/wishlist-page.html","/dashboard":"pages/dashboard.js","/_document":"pages/_document.js"}
+{
+  "/_app": "pages/_app.js",
+  "/_error": "pages/_error.js",
+  "/_document": "pages/_document.js",
+  "/account": "pages/account.js",
+  "/": "pages/index.js",
+  "/404": "pages/404.js",
+  "/products": "pages/products.js"
+}
