@@ -4,10 +4,10 @@ export default function Header() {
   return (
     <header className="site-header">
       <div className="header-top-bar">
-        FREE SHIPPING ON ORDERS OVER $50
+        FREE SHIPPING ON ORDERS OVER £150
       </div>
       <div className="contact-us-bar">
-        Need help? Contact us at support@example.com
+        Need help? Contact us at info@customisemeuk.com | 07588770901 | 10am - 7pm
       </div>
 
       <div className="header-main">
