@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { products } from '../data/products';
 import { WishlistManager, initWishlistManager } from '../lib/wishlist-manager';
-import { useCart } from '../lib/tempcontext';
+import { useCart } from '../lib/CartContext';
 
 
 

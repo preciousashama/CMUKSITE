@@ -15,7 +15,7 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 
 import { SessionProvider } from 'next-auth/react';
-import { CartProvider } from '../lib/tempcontext';
+import { CartProvider } from '../lib/CartContext';
 
 export default function MyApp({ Component, pageProps }) {
   return (

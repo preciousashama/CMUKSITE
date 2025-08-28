@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { useCart } from '../lib/tempcontext';  // Import the hook
+import { useCart } from '../lib/CartContext';  // Import the hook
 
 export default function CartPage() {
   const { cart } = useCart();  // Use the context hook inside the component
