@@ -139,8 +139,53 @@ export default function Header() {
       <nav className="navbar">
         <ul className="nav-menu">
           <li className="nav-item has-dropdown">
-            <Link href="/Shop">Shop</Link>
-            {/* Add dropdown content here... */}
+            <Link href="/products">Shop</Link>
+            <div className="dropdown-menu"> 
+              {/* Apparel Section */} 
+              <div className="dropdown-section"> 
+                <span className="dropdown-heading">APPAREL</span> 
+              <ul> 
+                <li><Link href="/Shop/T-shirts">T-shirts</Link></li> 
+                <li><Link href="/Shop/Tops">Tops</Link></li> 
+                <li><Link href="/Shop/Jeans">Jeans</Link></li> 
+                <li><Link href="/Shop/Hoodies">Hoodies</Link></li> 
+                </ul> 
+                </div> 
+                {/* Accessories Section */} 
+                <div className="dropdown-section"> 
+                  <span className="dropdown-heading">ACCESSORIES</span>
+                <ul> <li><Link href="/Shop/Hats">Hats</Link></li> 
+                <li><Link href="/Shop/Bags">Bags</Link></li> 
+                </ul> 
+                </div> 
+                {/* Party Section */} 
+                <div className="dropdown-section"> 
+                  <span className="dropdown-heading">PARTY</span> 
+                  <ul> <li><Link href="/Shop/T-shirts">T-shirts</Link></li> 
+                  <li><Link href="/Shop/Tops">Tops</Link></li> 
+                  <li><Link href="/Shop/Jeans">Jeans</Link></li> 
+                  <li><Link href="/Shop/Hoodies">Hoodies</Link></li> 
+                  </ul> 
+                  </div> 
+                  {/* Events Section */} 
+                  <div className="dropdown-section"> 
+                    <span className="dropdown-heading">EVENTS</span> 
+                    <ul> <li><Link href="/Shop/T-shirts">T-shirts</Link></li> 
+                    <li><Link href="/Shop/Tops">Tops</Link></li> 
+                    <li><Link href="/Shop/Jeans">Jeans</Link></li> 
+                    <li><Link href="/Shop/Hoodies">Hoodies</Link></li> 
+                    </ul> 
+                    </div> 
+                    {/* Corporate Section */} 
+                    <div className="dropdown-section"> 
+                      <span className="dropdown-heading">CORPORATE</span> 
+                      <ul> <li><Link href="/Shop/T-shirts">T-shirts</Link></li> 
+                      <li><Link href="/Shop/Tops">Tops</Link></li> 
+                      <li><Link href="/Shop/Jeans">Jeans</Link></li>
+                       <li><Link href="/Shop/Hoodies">Hoodies</Link></li>
+                      </ul> 
+                      </div> 
+                    </div>
           </li>
           <li className="nav-item"><Link href="/designservice">Design Studio</Link></li>
           <li className="nav-item"><Link href="/send">Send Items In</Link></li>

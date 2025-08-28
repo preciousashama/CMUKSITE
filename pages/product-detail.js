@@ -1,14 +1,19 @@
 import { useEffect, useState } from 'react';
+import { products } from '../data/products';
+import { WishlistManager, initWishlistManager } from '../lib/wishlist-manager';
+import { useCart } from '../lib/tempcontext';
 
-// Assume products, CartManager, WishlistManager are imported or available globally
+
 
 export default function ProductDetail() {
+  const { addToCart } = useCart();
   const [product, setProduct] = useState(null);
   const [selectedColor, setSelectedColor] = useState('');
   const [sizeQuantities, setSizeQuantities] = useState({});
   const [placement, setPlacement] = useState('left');
   const [uploadedArtworkSrc, setUploadedArtworkSrc] = useState('');
   const [toast, setToast] = useState(null);
+
 
   // Get product id from URL query param (client-side)
   useEffect(() => {
@@ -72,17 +77,19 @@ export default function ProductDetail() {
 
   // Handle add to cart
   function handleAddToCart() {
-    if (totalQuantity === 0) {
-      showToast('Please select at least one size and quantity', 'error');
-      return;
-    }
-    Object.entries(sizeQuantities).forEach(([size, quantity]) => {
-      if (quantity > 0) {
-        CartManager.addToCart(product.id, quantity, { color: selectedColor, size });
-      }
-    });
-    showToast(`${totalQuantity} ${totalQuantity === 1 ? 'item' : 'items'} added to bag`, 'success');
+  if (totalQuantity === 0) {
+    showToast('Please select at least one size and quantity', 'error');
+    return;
   }
+  Object.entries(sizeQuantities).forEach(([size, quantity]) => {
+    if (quantity > 0) {
+      addToCart(product, quantity, { color: selectedColor, size });
+    }
+  });
+  showToast(`${totalQuantity} ${totalQuantity === 1 ? 'item' : 'items'} added to bag`, 'success');
+}
+
+
 
   // Handle wishlist toggle
   function toggleWishlist() {

@@ -1,22 +1,22 @@
-import Link from 'next/link'
+import Link from 'next/link';
+import { useCart } from '../lib/tempcontext';  // Import the hook
 
 export default function CartPage() {
-  // Later you’ll connect this with context/localStorage
-  const items = []  
+  const { cart } = useCart();  // Use the context hook inside the component
 
   return (
     <div className="max-w-4xl mx-auto p-6">
       <h1 className="text-2xl font-bold mb-6">Your Cart</h1>
 
-      {items.length === 0 ? (
+      {cart.length === 0 ? (
         <p>Your cart is empty.</p>
       ) : (
         <>
           <ul className="space-y-4">
-            {items.map((item, i) => (
+            {cart.map((item, i) => (
               <li key={i} className="flex justify-between">
-                <span>{item.name}</span>
-                <span>£{item.price}</span>
+                <span>{item.productId}</span> {/* or whatever you want to display */}
+                <span>Qty: {item.quantity}</span>
               </li>
             ))}
           </ul>
@@ -31,5 +31,5 @@ export default function CartPage() {
         </>
       )}
     </div>
-  )
+  );
 }
