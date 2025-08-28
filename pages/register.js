@@ -1,153 +1,158 @@
-import { useState, useEffect } from 'react';
-import Link from 'next/link';
+import { useState } from 'react';
 import Head from 'next/head';
 
-// Dummy UserManager mock (replace with your actual implementation)
-const UserManager = {
-  isLoggedIn: () => false,
-  registerUser: (username, email, password) => {
-    // Simulate registration logic; you can replace with API call
-    if (username === 'taken') {
-      return { success: false, message: 'Username is already taken' };
-    }
-    return { success: true };
-  },
-};
-
 export default function RegisterPage() {
-  const [username, setUsername] = useState('');
+  const [step, setStep] = useState(1);
+
+  // Step 1 fields
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
+  const [dob, setDob] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [message, setMessage] = useState('');
-  const [messageType, setMessageType] = useState(''); // 'error' or 'success'
 
-  useEffect(() => {
-    if (UserManager.isLoggedIn()) {
-      // Redirect if already logged in
-      window.location.href = '/account';
-    }
-  }, []);
+  // Step 2 fields
+  const [company, setCompany] = useState('');
+  const [shipping, setShipping] = useState({ address: '', city: '', postcode: '', country: '' });
+  const [billing, setBilling] = useState({ address: '', city: '', postcode: '', country: '' });
 
-  const handleSubmit = (e) => {
+  const [sameAsShipping, setSameAsShipping] = useState(false);
+
+  const isStep1Complete =
+    firstName && lastName && email && dob && password && confirmPassword && password === confirmPassword;
+
+  const handleRegister = (e) => {
     e.preventDefault();
 
-    if (password !== confirmPassword) {
-      setMessageType('error');
-      setMessage('Passwords do not match');
-      return;
-    }
+    // Example: send form to backend
+    console.log({
+      firstName, lastName, email, dob, password,
+      company,
+      shipping,
+      billing: sameAsShipping ? shipping : billing,
+    });
 
-    if (password.length < 6) {
-      setMessageType('error');
-      setMessage('Password must be at least 6 characters long');
-      return;
-    }
-
-    const result = UserManager.registerUser(username, email, password);
-    if (result.success) {
-      setMessageType('success');
-      setMessage('Registration successful! Redirecting...');
-      setTimeout(() => {
-        window.location.href = '/'; // Redirect to home page
-      }, 1500);
-    } else {
-      setMessageType('error');
-      setMessage(result.message);
-    }
+    alert('Registered!');
   };
 
   return (
     <>
       <Head>
-        <title>My Shop - Register</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        {/* Include your CSS files here or import them globally */}
-        <link rel="stylesheet" href="/css/global.css" />
-        <link rel="stylesheet" href="/css/components.css" />
-        <link rel="stylesheet" href="/css/header.css" />
-        <link rel="stylesheet" href="/css/footer.css" />
-        <link rel="stylesheet" href="/css/responsive.css" />
-        <link rel="stylesheet" href="/css/products.css" />
+        <title>Register</title>
       </Head>
 
-      {/* You can import Header and Footer components here if you have them */}
-      {/* <Header /> */}
+      <main className="multi-step-form">
+        <h1>Create an Account</h1>
 
-      <main>
-        <section className="auth-container">
-          <h1>Create an Account</h1>
-          {message && (
-            <div className={`auth-message ${messageType}`}>
-              {message}
+        <form onSubmit={handleRegister}>
+          {step === 1 && (
+            <div className="form-step">
+              <div className="form-group">
+                <label>First Name</label>
+                <input value={firstName} onChange={(e) => setFirstName(e.target.value)} required />
+              </div>
+              <div className="form-group">
+                <label>Last Name</label>
+                <input value={lastName} onChange={(e) => setLastName(e.target.value)} required />
+              </div>
+              <div className="form-group">
+                <label>Email</label>
+                <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+              </div>
+              <div className="form-group">
+                <label>Date of Birth</label>
+                <input type="date" value={dob} onChange={(e) => setDob(e.target.value)} required />
+              </div>
+              <div className="form-group">
+                <label>Password</label>
+                <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+              </div>
+              <div className="form-group">
+                <label>Confirm Password</label>
+                <input
+                  type="password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                />
+              </div>
+              {isStep1Complete && (
+                <button type="button" onClick={() => setStep(2)} className="next-btn">
+                  Next
+                </button>
+              )}
             </div>
           )}
 
-          <form className="auth-form" onSubmit={handleSubmit}>
-            <div className="form-group">
-              <label htmlFor="username">Username</label>
-              <input
-                type="text"
-                id="username"
-                name="username"
-                required
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-              />
+          {step === 2 && (
+            <div className="form-step">
+              <div className="form-group">
+                <label>Company</label>
+                <input value={company} onChange={(e) => setCompany(e.target.value)} />
+              </div>
+
+              <h3>Shipping Address</h3>
+              <div className="form-group">
+                <label>Address</label>
+                <input value={shipping.address} onChange={(e) => setShipping({ ...shipping, address: e.target.value })} />
+              </div>
+              <div className="form-group">
+                <label>City</label>
+                <input value={shipping.city} onChange={(e) => setShipping({ ...shipping, city: e.target.value })} />
+              </div>
+              <div className="form-group">
+                <label>Postcode</label>
+                <input value={shipping.postcode} onChange={(e) => setShipping({ ...shipping, postcode: e.target.value })} />
+              </div>
+              <div className="form-group">
+                <label>Country</label>
+                <input value={shipping.country} onChange={(e) => setShipping({ ...shipping, country: e.target.value })} />
+              </div>
+
+              <div className="form-group checkbox">
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={sameAsShipping}
+                    onChange={(e) => setSameAsShipping(e.target.checked)}
+                  />
+                  Billing address same as shipping
+                </label>
+              </div>
+
+              {!sameAsShipping && (
+                <>
+                  <h3>Billing Address</h3>
+                  <div className="form-group">
+                    <label>Address</label>
+                    <input
+                      value={billing.address}
+                      onChange={(e) => setBilling({ ...billing, address: e.target.value })}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>City</label>
+                    <input value={billing.city} onChange={(e) => setBilling({ ...billing, city: e.target.value })} />
+                  </div>
+                  <div className="form-group">
+                    <label>Postcode</label>
+                    <input value={billing.postcode} onChange={(e) => setBilling({ ...billing, postcode: e.target.value })} />
+                  </div>
+                  <div className="form-group">
+                    <label>Country</label>
+                    <input value={billing.country} onChange={(e) => setBilling({ ...billing, country: e.target.value })} />
+                  </div>
+                </>
+              )}
+
+              <button type="submit" className="register-btn">
+                Register
+              </button>
             </div>
-
-            <div className="form-group">
-              <label htmlFor="email">Email</label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="password">Password</label>
-              <input
-                type="password"
-                id="password"
-                name="password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="confirm-password">Confirm Password</label>
-              <input
-                type="password"
-                id="confirm-password"
-                name="confirm-password"
-                required
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-              />
-            </div>
-
-            <button type="submit" className="btn auth-btn">
-              Register
-            </button>
-          </form>
-
-          <div className="auth-footer">
-  <p>
-    Already have an account?{' '}
-    <Link href="/login">Login here</Link>
-  </p>
-</div>
-
-        </section>
+          )}
+        </form>
       </main>
-
-      {/* <Footer /> */}
     </>
   );
 }

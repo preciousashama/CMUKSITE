@@ -1,14 +1,16 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/router'; // Optional: for form submission
+import { useSession, signIn, signOut } from 'next-auth/react';
+import { useRouter } from 'next/router';
 import { products } from '../data/products';
 
 export default function Header() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredResults, setFilteredResults] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
+  const { data: session, status } = useSession();
 
   const handleSearchChange = (e) => {
     const term = e.target.value;
@@ -23,7 +25,7 @@ export default function Header() {
         (p.size && p.size.toLowerCase().includes(lower)) ||
         (p.colors && p.colors.join('').toLowerCase().includes(lower))
       );
-      setFilteredResults(results.slice(0, 5)); // Limit to 5
+      setFilteredResults(results.slice(0, 5));
       setShowDropdown(true);
     } else {
       setFilteredResults([]);
@@ -40,6 +42,7 @@ export default function Header() {
 
   return (
     <header className="site-header">
+      {/* Top bars */}
       <div className="header-top-bar">
         FREE SHIPPING ON ORDERS OVER £150
       </div>
@@ -47,14 +50,16 @@ export default function Header() {
         Need help? Contact us at info@customisemeuk.com | 07588770901 | 10am - 7pm
       </div>
 
+      {/* Main header */}
       <div className="header-main">
+        {/* Logo */}
         <div className="header-left logo">
           <Link href="/">
             <img src="/assets/icon.png" alt="Logo" />
           </Link>
         </div>
 
-        {/* SEARCH BAR */}
+        {/* Search Bar */}
         <div className="search-container">
           <form id="search-form" onSubmit={handleSubmit}>
             <input
@@ -64,14 +69,10 @@ export default function Header() {
               value={searchTerm}
               onChange={handleSearchChange}
               onFocus={() => searchTerm.length > 1 && setShowDropdown(true)}
-              onBlur={() => setTimeout(() => setShowDropdown(false), 200)} // delay to allow click
+              onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
             />
             <button id="search-button" type="submit">
-              <img
-                src="/assets/search.png"
-                alt="Search Icon"
-                className="icon-search"
-              />
+              <img src="/assets/search.png" alt="Search Icon" className="icon-search" />
             </button>
           </form>
 
@@ -106,7 +107,7 @@ export default function Header() {
           )}
         </div>
 
-        {/* HEADER ICONS */}
+        {/* Header Icons */}
         <div className="header-right header-icons">
           <Link href="/currency">
             <img src="/assets/globe.png" alt="currency" className="icon-currency" />
@@ -117,76 +118,31 @@ export default function Header() {
           <Link href="/cart">
             <img src="/assets/Basketicon.png" alt="Cart" className="icon-basket" />
           </Link>
-          <Link href="/account">
-            <span>Sign In / Sign Up</span>
-          </Link>
+
+          {/* 👇 AUTH section */}
+          {status === 'authenticated' ? (
+            <>
+              <span className="greeting">Hi, {session.user?.name?.split(' ')[0] || 'User'}!</span>
+              <Link href="/account">Account</Link>
+              <button onClick={() => signOut()} className="sign-out-btn">Sign out</button>
+            </>
+          ) : (
+      <Link href="/login" className="sign-in-btn">
+  Sign In / Sign Up
+</Link>
+
+          )}
         </div>
       </div>
 
-      {/* NAVIGATION BAR */}
+      {/* Navigation Bar */}
       <nav className="navbar">
         <ul className="nav-menu">
           <li className="nav-item has-dropdown">
             <Link href="/Shop">Shop</Link>
-
-            <div className="dropdown-menu">
-              {/* Apparel Section */}
-              <div className="dropdown-section">
-                <span className="dropdown-heading">APPAREL</span>
-                <ul>
-                  <li><Link href="/Shop/T-shirts">T-shirts</Link></li>
-                  <li><Link href="/Shop/Tops">Tops</Link></li>
-                  <li><Link href="/Shop/Jeans">Jeans</Link></li>
-                  <li><Link href="/Shop/Hoodies">Hoodies</Link></li>
-                </ul>
-              </div>
-
-              {/* Accessories Section */}
-              <div className="dropdown-section">
-                <span className="dropdown-heading">ACCESSORIES</span>
-                <ul>
-                  <li><Link href="/Shop/Hats">Hats</Link></li>
-                  <li><Link href="/Shop/Bags">Bags</Link></li>
-                </ul>
-              </div>
-
-              {/* Party Section */}
-              <div className="dropdown-section">
-                <span className="dropdown-heading">PARTY</span>
-                <ul>
-                  <li><Link href="/Shop/T-shirts">T-shirts</Link></li>
-                  <li><Link href="/Shop/Tops">Tops</Link></li>
-                  <li><Link href="/Shop/Jeans">Jeans</Link></li>
-                  <li><Link href="/Shop/Hoodies">Hoodies</Link></li>
-                </ul>
-              </div>
-
-              {/* Events Section */}
-              <div className="dropdown-section">
-                <span className="dropdown-heading">EVENTS</span>
-                <ul>
-                  <li><Link href="/Shop/T-shirts">T-shirts</Link></li>
-                  <li><Link href="/Shop/Tops">Tops</Link></li>
-                  <li><Link href="/Shop/Jeans">Jeans</Link></li>
-                  <li><Link href="/Shop/Hoodies">Hoodies</Link></li>
-                </ul>
-              </div>
-
-              {/* Corporate Section */}
-              <div className="dropdown-section">
-                <span className="dropdown-heading">CORPORATE</span>
-                <ul>
-                  <li><Link href="/Shop/T-shirts">T-shirts</Link></li>
-                  <li><Link href="/Shop/Tops">Tops</Link></li>
-                  <li><Link href="/Shop/Jeans">Jeans</Link></li>
-                  <li><Link href="/Shop/Hoodies">Hoodies</Link></li>
-                </ul>
-              </div>
-            </div>
+            {/* Add dropdown content here... */}
           </li>
-
-          {/* Other nav items */}
-          <li className="nav-item"><Link href="pages/designservice.js">Design Artwork</Link></li>
+          <li className="nav-item"><Link href="/designservice">Design Studio</Link></li>
           <li className="nav-item"><Link href="/send">Send Items In</Link></li>
           <li className="nav-item"><Link href="/Installation">Installation</Link></li>
           <li className="nav-item"><Link href="/Subscriptions">Subscriptions</Link></li>

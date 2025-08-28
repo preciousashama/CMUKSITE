@@ -24,34 +24,27 @@ export default function LoginPage() {
   };
 
   return (
-    <div>
-      <h1>Login</h1>
-      <button onClick={() => signIn('google')}>Sign in with Google</button>
+    <div className="login-container">
+  <h1>Login</h1>
+  <div className="center-button">
+  <button className="google-button" onClick={() => signIn('google')}>
+    Sign in with Google
+  </button>
+</div>
 
-      <h2>Or login with email</h2>
-      <form onSubmit={handleEmailLogin}>
-        <label>Email:</label>
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
+  <h2>Or login with email</h2>
+  <form onSubmit={handleEmailLogin}>
+    <label>Email:</label>
+    <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
 
-        <label>Password:</label>
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
+    <label>Password:</label>
+    <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
 
-        <button type="submit">Login</button>
-      </form>
+    <button type="submit">Login</button>
+  </form>
 
-      <p>
-        Don't have an account? <a href="/register">Register here</a>
-      </p>
-    </div>
+  <p>Don't have an account? <a href="/register">Register here</a></p>
+</div>
+
   );
 }
