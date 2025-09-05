@@ -16,7 +16,7 @@ export default function ProductsPage() {
 const router = useRouter();
 
 const goToProduct = (id) => {
-  router.push(`/product-detail?id=${id}`);
+  router.push(`/productdetail?id=${id}`);
 
 
 };

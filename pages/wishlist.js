@@ -1,7 +1,7 @@
 // pages/wishlist.js
 import { useEffect, useState, useContext } from 'react';
 import { WishlistManager, initWishlistManager } from '../lib/wishlist-manager';
-import { CartContext } from '../lib/CartContext.js/index.js';
+import { CartContext } from '../lib/CartContext.js';
 
 export default function WishlistPage() {
   const [wishlistItems, setWishlistItems] = useState([]);

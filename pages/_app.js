@@ -8,7 +8,9 @@ import '../styles/login.css';
 import '../styles/register.css';
 import '../styles/account.css';
 import '../styles/products.css';
-import '../styles/product-detail.css';
+import '../styles/productdetail.css';
+import '../styles/cart.css';
+import '../styles/checkout.css';
 
 
 import Header from '../components/Header';

@@ -1,0 +1,236 @@
+.product-detail-page {
+  font-family: Arial, sans-serif;
+  padding: 20px;
+}
+
+.product-main {
+  display: flex;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+
+.product-canvas {
+  position: relative;
+  width: 400px;
+  height: 400px;
+  flex-shrink: 0;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #f9f9f9;
+}
+
+.uploaded-artwork {
+  position: absolute;
+  pointer-events: none;
+  user-select: none;
+  max-width: 100%;
+  max-height: 100%;
+  /* Adjust placement below */
+}
+
+/* Positioning for uploaded artwork based on placement */
+.uploaded-artwork.left {
+  top: 20%;
+  left: 10%;
+  width: 30%;
+}
+
+.uploaded-artwork.right {
+  top: 20%;
+  right: 10%;
+  width: 30%;
+}
+
+.uploaded-artwork.centre {
+  top: 25%;
+  left: 35%;
+  width: 30%;
+}
+
+.uploaded-artwork.bottom-right {
+  bottom: 10%;
+  right: 10%;
+  width: 25%;
+}
+
+.uploaded-artwork.bottom-left {
+  bottom: 10%;
+  left: 10%;
+  width: 25%;
+}
+
+.product-info {
+  flex: 1;
+  max-width: 600px;
+}
+
+h1 {
+  margin-top: 0;
+  font-size: 2rem;
+}
+
+.price {
+  font-size: 1.5rem;
+  color: #222;
+  margin-bottom: 12px;
+}
+
+.description {
+  margin-bottom: 20px;
+  color: #555;
+}
+
+.option-group {
+  margin-bottom: 25px;
+}
+
+.side-label {
+  display: block;
+  font-weight: 700;
+  margin-bottom: 10px;
+  font-size: 0.95rem;
+  color: #333;
+}
+
+/* Color circles container */
+.color-options {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* Color circle styling */
+.color-circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+  box-shadow: 0 0 3px rgb(0 0 0 / 0.15);
+}
+
+/* Selected color circle */
+.color-circle.selected {
+  border-color: #0070f3;
+  box-shadow: 0 0 6px #0070f3;
+  transform: scale(1.1);
+}
+
+/* Sizes header & inputs layout */
+.sizes-header {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 6px;
+}
+
+.size-label {
+  width: 40px;
+  font-weight: 600;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.sizes-inputs {
+  display: flex;
+  gap: 12px;
+}
+
+.sizes-inputs input[type="number"] {
+  width: 40px;
+  padding: 6px 8px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  text-align: center;
+}
+
+/* Placement options */
+.placement-options {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.placement-options label {
+  cursor: pointer;
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  user-select: none;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+  font-size: 0.9rem;
+}
+
+.placement-options input[type="radio"]:checked + label {
+  background-color: #0070f3;
+  color: white;
+  border-color: #0070f3;
+}
+
+/* Action buttons */
+.action-buttons {
+  display: flex;
+  gap: 16px;
+  margin-top: 15px;
+}
+
+.action-buttons button {
+  cursor: pointer;
+  font-weight: 600;
+  background-color: #0070f3;
+  border: none;
+  color: white;
+  padding: 10px 18px;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.action-buttons button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.action-buttons button:hover:not(:disabled) {
+  background-color: #005bb5;
+}
+
+/* Upload design label styling */
+.upload-buttons label {
+  font-weight: 700;
+  color: #0070f3;
+  cursor: pointer;
+  user-select: none;
+}
+
+/* Toast notifications */
+.toast {
+  position: fixed;
+  bottom: 25px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 12px 24px;
+  border-radius: 6px;
+  font-weight: 600;
+  color: white;
+  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+  z-index: 9999;
+}
+
+.toast-default {
+  background-color: #333;
+}
+
+.toast-success {
+  background-color: #28a745;
+}
+
+.toast-error {
+  background-color: #dc3545;
+}
+
+.toast-info {
+  background-color: #17a2b8;
+}
