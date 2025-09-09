@@ -1,4 +1,4 @@
-# <ins>**CMUKSITE – Project Handover Summary**</ins> 
+# <ins>**Project Name: CMUKSITE**</ins> 
 
 ## **Overall Architecture**
 
