@@ -1,6 +1,6 @@
-#<ins>**CMUKSITE – Project Handover Summary**</ins> 
+# <ins>**CMUKSITE – Project Handover Summary**</ins> 
 
-##**Overall Architecture**
+## **Overall Architecture**
 
 - Framework: Next.js 13 – full-stack React framework for both frontend and backend routes.
 - Frontend: React 18 with CSS, interactive 3D features via Three.js (react-three-fiber, drei).
@@ -9,7 +9,7 @@
 - Payment System: Stripe API integration.
 - Security: bcrypt for password hashing, dotenv for environment configs, CORS for API security.
 
-##**Key Features Implemented**
+## **Key Features Implemented**
 
 - Responsive React frontend with reusable components.
 - Static and dynamic HTML page serving through Express.
@@ -22,7 +22,7 @@
 - Security headers applied via next.config.js (XSS protection, CSP, HSTS, etc.).
 - Developer tooling: ESLint, Stylelint, TypeScript, Nodemon.
 
-##**Project Structure**
+## **Project Structure**
 
 - pages/ – Next.js pages and API routes.
 - components/ – Reusable HTML/React components.
@@ -31,7 +31,7 @@
 - server.js – Custom Express server handling APIs and static routing.
 - next.config.js – Security headers and global configurations.
 
-##**Deployment Setup**
+## **Deployment Setup**
 
 - Configured for deployment on Vercel (Next.js native hosting).
 - Express server allows flexibility for hosting on Heroku, Railway, or VPS.
@@ -39,7 +39,7 @@
 - Static assets served from /public folder.
 - Server listens on configurable PORT (default: 3000).
 
-##**Handover Status**
+## **Handover Status**
 
 ✅ Full-stack framework completed with both frontend and backend in place.
 
@@ -51,7 +51,7 @@
 
 ✅ Competition-ready with modern, production-grade architecture.
 
-##**Next Steps to Achieve Full Functionality**
+## **Next Steps to Achieve Full Functionality**
 
 🔐 **User Authentication & Accounts:** Finalize NextAuth setup with PostgreSQL to allow user registration, login, and password recovery.
 
