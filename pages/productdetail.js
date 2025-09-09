@@ -5,6 +5,7 @@ import { useCart } from '../lib/CartContext';
 import dynamic from 'next/dynamic';
 import React from 'react';
 
+
 const COLOR_OPTIONS = [
   { name: 'Black', hex: '#000000' },
   { name: 'White', hex: '#FFFFFF' },
