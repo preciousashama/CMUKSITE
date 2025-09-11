@@ -1,1 +1,1 @@
-self.__REACT_LOADABLE_MANIFEST="{}"
+self.__REACT_LOADABLE_MANIFEST="{\"productdetail.js -> ../components/ThreeCanvas\":{\"id\":\"productdetail.js -> ../components/ThreeCanvas\",\"files\":[\"static/chunks/components_ThreeCanvas_js.js\"]}}"

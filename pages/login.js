@@ -19,8 +19,18 @@ export default function LoginPage() {
 
   const handleEmailLogin = async (e) => {
     e.preventDefault();
-    // TODO: call your backend API for email/password login here
-    // e.g. await fetch('/api/login', { method: 'POST', body: JSON.stringify({ email, password })})
+    
+    const result = await signIn('credentials', {
+      email,
+      password,
+      redirect: false,
+    });
+
+    if (result?.error) {
+      alert('Login failed: ' + result.error);
+    } else if (result?.ok) {
+      router.push('/');
+    }
   };
 
   return (

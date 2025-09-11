@@ -18,7 +18,7 @@ export default function Footer() {
             <h4>Quick Links</h4>
             <ul className="footer-links">
               <li><a href="/apparel">SHOP</a></li>
-              <li><a href="/stickers">DESIGN STUDIO</a></li>
+              <li><a href="/designservice">DESIGN STUDIO</a></li>
               <li><a href="/party-occasions">SEND ITEMS IN</a></li>
               <li><a href="/all-reviews">INSTALLATIONS</a></li>
               <li><a href="/all-reviews">SUBSCRIPTIONS</a></li>

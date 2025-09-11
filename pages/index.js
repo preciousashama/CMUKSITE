@@ -28,7 +28,7 @@ export default function HomePage() {
           </div>
           <div className="best-sellers-images">
             <a href="/apparel" className="product-item"><img src="/assets/Thumnails/Apparel Thumbnail.png" alt="Apparel" /></a>
-            <a href="/stickers" className="product-item"><img src="/assets/Thumnails/Stickers Thumbnail.png" alt="Stickers" /></a>
+            <a href="/products?category=stickers" className="product-item"><img src="/assets/Thumnails/Stickers Thumbnail.png" alt="Stickers" /></a>
             <a href="/party-occasions" className="product-item"><img src="/assets/Thumnails/Party Thumbnail.png" alt="Party" /></a>
           </div>
         </section>

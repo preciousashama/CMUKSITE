@@ -1,1 +1,8 @@
-{}
+{
+  "productdetail.js -> ../components/ThreeCanvas": {
+    "id": "productdetail.js -> ../components/ThreeCanvas",
+    "files": [
+      "static/chunks/components_ThreeCanvas_js.js"
+    ]
+  }
+}

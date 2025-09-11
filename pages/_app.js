@@ -15,6 +15,7 @@ import '../styles/checkout.css';
 
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 import { SessionProvider } from 'next-auth/react';
 import { CartProvider } from '../lib/CartContext';
@@ -24,9 +25,11 @@ export default function MyApp({ Component, pageProps }) {
     <SessionProvider session={pageProps.session}>
       <CartProvider>
         <Header />
-        <main>
-          <Component {...pageProps} />
-        </main>
+        <ErrorBoundary>
+          <main>
+            <Component {...pageProps} />
+          </main>
+        </ErrorBoundary>
         <Footer />
       </CartProvider>
     </SessionProvider>

@@ -145,44 +145,44 @@ export default function Header() {
               <div className="dropdown-section"> 
                 <span className="dropdown-heading">APPAREL</span> 
               <ul> 
-                <li><Link href="/Shop/T-shirts">T-shirts</Link></li> 
-                <li><Link href="/Shop/Tops">Tops</Link></li> 
-                <li><Link href="/Shop/Jeans">Jeans</Link></li> 
-                <li><Link href="/Shop/Hoodies">Hoodies</Link></li> 
+                <li><Link href="/products?category=t-shirts">T-shirts</Link></li> 
+                <li><Link href="/products?category=tops">Tops</Link></li> 
+                <li><Link href="/products?category=jeans">Jeans</Link></li> 
+                <li><Link href="/products?category=hoodies">Hoodies</Link></li> 
                 </ul> 
                 </div> 
                 {/* Accessories Section */} 
                 <div className="dropdown-section"> 
                   <span className="dropdown-heading">ACCESSORIES</span>
-                <ul> <li><Link href="/Shop/Hats">Hats</Link></li> 
-                <li><Link href="/Shop/Bags">Bags</Link></li> 
+                <ul> <li><Link href="/products?category=hats">Hats</Link></li> 
+                <li><Link href="/products?category=bags">Bags</Link></li> 
                 </ul> 
                 </div> 
                 {/* Party Section */} 
                 <div className="dropdown-section"> 
                   <span className="dropdown-heading">PARTY</span> 
-                  <ul> <li><Link href="/Shop/T-shirts">T-shirts</Link></li> 
-                  <li><Link href="/Shop/Tops">Tops</Link></li> 
-                  <li><Link href="/Shop/Jeans">Jeans</Link></li> 
-                  <li><Link href="/Shop/Hoodies">Hoodies</Link></li> 
+                  <ul> <li><Link href="/products?category=t-shirts">T-shirts</Link></li> 
+                  <li><Link href="/products?category=tops">Tops</Link></li> 
+                  <li><Link href="/products?category=jeans">Jeans</Link></li> 
+                  <li><Link href="/products?category=hoodies">Hoodies</Link></li> 
                   </ul> 
                   </div> 
                   {/* Events Section */} 
                   <div className="dropdown-section"> 
                     <span className="dropdown-heading">EVENTS</span> 
-                    <ul> <li><Link href="/Shop/T-shirts">T-shirts</Link></li> 
-                    <li><Link href="/Shop/Tops">Tops</Link></li> 
-                    <li><Link href="/Shop/Jeans">Jeans</Link></li> 
-                    <li><Link href="/Shop/Hoodies">Hoodies</Link></li> 
+                    <ul> <li><Link href="/products?category=t-shirts">T-shirts</Link></li> 
+                    <li><Link href="/products?category=tops">Tops</Link></li> 
+                    <li><Link href="/products?category=jeans">Jeans</Link></li> 
+                    <li><Link href="/products?category=hoodies">Hoodies</Link></li> 
                     </ul> 
                     </div> 
                     {/* Corporate Section */} 
                     <div className="dropdown-section"> 
                       <span className="dropdown-heading">CORPORATE</span> 
-                      <ul> <li><Link href="/Shop/T-shirts">T-shirts</Link></li> 
-                      <li><Link href="/Shop/Tops">Tops</Link></li> 
-                      <li><Link href="/Shop/Jeans">Jeans</Link></li>
-                       <li><Link href="/Shop/Hoodies">Hoodies</Link></li>
+                      <ul> <li><Link href="/products?category=t-shirts">T-shirts</Link></li> 
+                      <li><Link href="/products?category=tops">Tops</Link></li> 
+                      <li><Link href="/products?category=jeans">Jeans</Link></li>
+                       <li><Link href="/products?category=hoodies">Hoodies</Link></li>
                       </ul> 
                       </div> 
                     </div>

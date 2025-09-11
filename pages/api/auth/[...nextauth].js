@@ -62,7 +62,7 @@ const authHandler = async (req, res) => {
     ],
 
     pages: {
-      signIn: "/login-page",
+      signIn: "/login",
     },
 
     session: {

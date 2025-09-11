@@ -2,7 +2,7 @@ import React, { useRef, useEffect } from 'react';
 import { Canvas, useLoader, useFrame } from '@react-three/fiber';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { MeshStandardMaterial, Color } from 'three';
-import { OrbitControls, Environment } from '@react-three/drei';
+import { OrbitControls } from '@react-three/drei';
 
 function Model({ color }) {
   const gltf = useLoader(GLTFLoader, '/models/tshirt.glb');
@@ -31,11 +31,11 @@ export default function ThreeCanvas({ color }) {
       camera={{ position: [0, 0, 3], fov: 35 }}
       style={{ width: '100%', height: '400px' }}
     >
-      <ambientLight intensity={0.6} />
-      <directionalLight position={[5, 5, 5]} intensity={1} />
+      <ambientLight intensity={0.8} />
+      <directionalLight position={[5, 5, 5]} intensity={1.2} />
+      <pointLight position={[-5, -5, -5]} intensity={0.5} />
       <Model color={color} />
       <OrbitControls enableZoom={false} enablePan={false} />
-      <Environment preset="studio" />
     </Canvas>
   );
 }

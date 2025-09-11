@@ -1,8 +1,12 @@
 import { useState } from 'react';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
 
 export default function RegisterPage() {
   const [step, setStep] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState('');
+  const router = useRouter();
 
   // Step 1 fields
   const [firstName, setFirstName] = useState('');
@@ -22,18 +26,41 @@ export default function RegisterPage() {
   const isStep1Complete =
     firstName && lastName && email && dob && password && confirmPassword && password === confirmPassword;
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setMessage('');
 
-    // Example: send form to backend
-    console.log({
-      firstName, lastName, email, dob, password,
-      company,
-      shipping,
-      billing: sameAsShipping ? shipping : billing,
-    });
+    try {
+      const response = await fetch('/api/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          firstName,
+          lastName,
+          email,
+          password,
+        }),
+      });
 
-    alert('Registered!');
+      const data = await response.json();
+
+      if (response.ok) {
+        setMessage('Registration successful! Redirecting to login...');
+        setTimeout(() => {
+          router.push('/login');
+        }, 2000);
+      } else {
+        setMessage(data.message || 'Registration failed');
+      }
+    } catch (error) {
+      console.error('Registration error:', error);
+      setMessage('An error occurred during registration');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -146,8 +173,14 @@ export default function RegisterPage() {
                 </>
               )}
 
-              <button type="submit" className="register-btn">
-                Register
+              {message && (
+                <div className={`auth-message ${message.includes('successful') ? 'success' : 'error'}`}>
+                  {message}
+                </div>
+              )}
+              
+              <button type="submit" className="register-btn" disabled={loading}>
+                {loading ? 'Registering...' : 'Register'}
               </button>
             </div>
           )}
