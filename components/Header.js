@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useSession, signIn, signOut } from 'next-auth/react';
 import { useRouter } from 'next/router';
@@ -11,8 +11,28 @@ export default function Header() {
   const [filteredResults, setFilteredResults] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
   const { data: session, status } = useSession();
-  console.log("Session user:", session?.user);
+  const [showCurrencyDropdown, setShowCurrencyDropdown] = useState(false);
+  const [selectedCurrency, setSelectedCurrency] = useState({ code: 'GBP', flag: '🇬🇧' });
 
+  useEffect(() => {
+    const savedCurrency = localStorage.getItem('selectedCurrency');
+    if (savedCurrency) {
+      setSelectedCurrency(JSON.parse(savedCurrency));
+    }
+  }, []);
+
+  const handleCurrencyChange = (currency) => {
+    const currencyMap = {
+      EUR: { code: 'EUR', flag: '🇪🇺' },
+      GBP: { code: 'GBP', flag: '🇬🇧' },
+      USD: { code: 'USD', flag: '🇺🇸' },
+    };
+
+    const newCurrency = currencyMap[currency] || { code: 'GBP', flag: '🇬🇧' };
+    setSelectedCurrency(newCurrency);
+    localStorage.setItem('selectedCurrency', JSON.stringify(newCurrency));
+    setShowCurrencyDropdown(false);
+  };
 
   const handleSearchChange = (e) => {
     const term = e.target.value;
@@ -111,15 +131,69 @@ export default function Header() {
 
         {/* Header Icons */}
         <div className="header-right header-icons">
-          <Link href="/currency">
-            <img src="/assets/globe.png" alt="currency" className="icon-currency" />
-          </Link>
+
+         {/* Currency Dropdown */}
+<div className="currency-dropdown-wrapper" style={{ position: 'relative', textAlign: 'center', width: '50px' }}>
+  <img
+    src="/assets/globe.png"
+    alt="currency"
+    className="icon-currency"
+    onClick={() => setShowCurrencyDropdown(!showCurrencyDropdown)}
+    style={{ cursor: 'pointer', display: 'block', margin: '0 auto' }}
+  />
+  <div style={{ fontSize: '0.75rem', marginTop: '2px', userSelect: 'none' }}>
+    {selectedCurrency.code}
+  </div>
+
+  {showCurrencyDropdown && (
+    <div
+      className="currency-dropdown"
+      style={{
+        position: 'absolute',
+        top: '100%',
+        right: 0,
+        backgroundColor: 'white',
+        boxShadow: '0 2px 6px rgba(0,0,0,0.2)',
+        borderRadius: '4px',
+        zIndex: 10,
+        width: '120px',
+      }}
+    >
+      <button
+        onClick={() => handleCurrencyChange('EUR')}
+      >
+        <img
+          src="assets/Flags/eur.png"
+          alt="EU flag"
+        /> EUR
+      </button>
+      <button
+        onClick={() => handleCurrencyChange('GBP')}
+      >
+        <img
+          src="assets/Flags/gbp.png"
+          alt="GBP flag"
+        /> GBP
+      </button>
+      <button
+        onClick={() => handleCurrencyChange('USD')}
+      >
+        <img
+          src="assets/Flags/usd.png"
+          alt="USD flag"
+        /> USD
+      </button>
+    </div>
+  )}
+</div>
+
           <Link href="/wishlist">
             <img src="/assets/heart.png" alt="wishlist" className="icon-wishlist" />
           </Link>
           <Link href="/cart">
             <img src="/assets/Basketicon.png" alt="Cart" className="icon-basket" />
           </Link>
+
 
           {/* 👇 AUTH section */}
           {status === 'authenticated' ? (
@@ -129,10 +203,9 @@ export default function Header() {
               <button onClick={() => signOut()} className="sign-out-btn">Sign out</button>
             </>
           ) : (
-      <Link href="/login" className="sign-in-btn">
-  Sign In / Sign Up
-</Link>
-
+            <Link href="/login" className="sign-in-btn">
+              Sign In / Sign Up
+            </Link>
           )}
         </div>
       </div>
@@ -142,52 +215,56 @@ export default function Header() {
         <ul className="nav-menu">
           <li className="nav-item has-dropdown">
             <Link href="/products">Shop</Link>
-            <div className="dropdown-menu"> 
-              {/* Apparel Section */} 
-              <div className="dropdown-section"> 
-                <span className="dropdown-heading">APPAREL</span> 
-              <ul> 
-                <li><Link href="/products?category=t-shirts">T-shirts</Link></li> 
-                <li><Link href="/products?category=tops">Tops</Link></li> 
-                <li><Link href="/products?category=jeans">Jeans</Link></li> 
-                <li><Link href="/products?category=hoodies">Hoodies</Link></li> 
-                </ul> 
-                </div> 
-                {/* Accessories Section */} 
-                <div className="dropdown-section"> 
-                  <span className="dropdown-heading">ACCESSORIES</span>
-                <ul> <li><Link href="/products?category=hats">Hats</Link></li> 
-                <li><Link href="/products?category=bags">Bags</Link></li> 
-                </ul> 
-                </div> 
-                {/* Party Section */} 
-                <div className="dropdown-section"> 
-                  <span className="dropdown-heading">PARTY</span> 
-                  <ul> <li><Link href="/products?category=t-shirts">T-shirts</Link></li> 
-                  <li><Link href="/products?category=tops">Tops</Link></li> 
-                  <li><Link href="/products?category=jeans">Jeans</Link></li> 
-                  <li><Link href="/products?category=hoodies">Hoodies</Link></li> 
-                  </ul> 
-                  </div> 
-                  {/* Events Section */} 
-                  <div className="dropdown-section"> 
-                    <span className="dropdown-heading">EVENTS</span> 
-                    <ul> <li><Link href="/products?category=t-shirts">T-shirts</Link></li> 
-                    <li><Link href="/products?category=tops">Tops</Link></li> 
-                    <li><Link href="/products?category=jeans">Jeans</Link></li> 
-                    <li><Link href="/products?category=hoodies">Hoodies</Link></li> 
-                    </ul> 
-                    </div> 
-                    {/* Corporate Section */} 
-                    <div className="dropdown-section"> 
-                      <span className="dropdown-heading">CORPORATE</span> 
-                      <ul> <li><Link href="/products?category=t-shirts">T-shirts</Link></li> 
-                      <li><Link href="/products?category=tops">Tops</Link></li> 
-                      <li><Link href="/products?category=jeans">Jeans</Link></li>
-                       <li><Link href="/products?category=hoodies">Hoodies</Link></li>
-                      </ul> 
-                      </div> 
-                    </div>
+            <div className="dropdown-menu">
+              {/* Apparel Section */}
+              <div className="dropdown-section">
+                <span className="dropdown-heading">APPAREL</span>
+                <ul>
+                  <li><Link href="/products?category=t-shirts">T-shirts</Link></li>
+                  <li><Link href="/products?category=tops">Tops</Link></li>
+                  <li><Link href="/products?category=jeans">Jeans</Link></li>
+                  <li><Link href="/products?category=hoodies">Hoodies</Link></li>
+                </ul>
+              </div>
+              {/* Accessories Section */}
+              <div className="dropdown-section">
+                <span className="dropdown-heading">ACCESSORIES</span>
+                <ul>
+                  <li><Link href="/products?category=hats">Hats</Link></li>
+                  <li><Link href="/products?category=bags">Bags</Link></li>
+                </ul>
+              </div>
+              {/* Party Section */}
+              <div className="dropdown-section">
+                <span className="dropdown-heading">PARTY</span>
+                <ul>
+                  <li><Link href="/products?category=t-shirts">T-shirts</Link></li>
+                  <li><Link href="/products?category=tops">Tops</Link></li>
+                  <li><Link href="/products?category=jeans">Jeans</Link></li>
+                  <li><Link href="/products?category=hoodies">Hoodies</Link></li>
+                </ul>
+              </div>
+              {/* Events Section */}
+              <div className="dropdown-section">
+                <span className="dropdown-heading">EVENTS</span>
+                <ul>
+                  <li><Link href="/products?category=t-shirts">T-shirts</Link></li>
+                  <li><Link href="/products?category=tops">Tops</Link></li>
+                  <li><Link href="/products?category=jeans">Jeans</Link></li>
+                  <li><Link href="/products?category=hoodies">Hoodies</Link></li>
+                </ul>
+              </div>
+              {/* Corporate Section */}
+              <div className="dropdown-section">
+                <span className="dropdown-heading">CORPORATE</span>
+                <ul>
+                  <li><Link href="/products?category=t-shirts">T-shirts</Link></li>
+                  <li><Link href="/products?category=tops">Tops</Link></li>
+                  <li><Link href="/products?category=jeans">Jeans</Link></li>
+                  <li><Link href="/products?category=hoodies">Hoodies</Link></li>
+                </ul>
+              </div>
+            </div>
           </li>
           <li className="nav-item"><Link href="/designservice">Design Studio</Link></li>
           <li className="nav-item"><Link href="/send">Send Items In</Link></li>
