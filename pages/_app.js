@@ -11,6 +11,7 @@ import '../styles/products.css';
 import '../styles/productdetail.css';
 import '../styles/cart.css';
 import '../styles/checkout.css';
+import '../styles/wishlist.css';
 
 
 import Header from '../components/Header';

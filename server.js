@@ -25,28 +25,6 @@ app.get('/api/test', (req, res) => {
   res.json({ message: 'API is working!' });
 });
 
-// Fake product list
-const products = [
-  {
-    id: 1,
-    name: "Basic Black T-Shirt",
-    price: 1999,
-    image: "/assets/tshirt-black.jpg"
-  },
-  {
-    id: 2,
-    name: "Logo Tote Bag",
-    price: 1499,
-    image: "/assets/tote-bag.jpg"
-  },
-  {
-    id: 3,
-    name: "Sticker Pack",
-    price: 499,
-    image: "/assets/sticker-pack.jpg"
-  }
-];
-
 // Products API
 app.get('/api/products', (req, res) => {
   res.json(products);

@@ -41,9 +41,10 @@ export default function WishlistPage() {
           <p className="product-price">£{product.price.toFixed(2)}</p>
           <p className="product-category">Category: {product.category}</p>
           <div className="product-actions">
-            <a href={`/product-detail?id=${product.id}`} className="btn view-btn">
-              View Details
-            </a>
+  <a href={`/productdetails?id=${product.id}`} className="btn view-btn">
+    View Details
+  </a>
+
             <button
               className="btn add-to-cart-btn"
               onClick={() => handleAddToCart(product.id)}
