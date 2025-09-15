@@ -84,7 +84,8 @@
 
 .header-icons img.icon-basket,
 .header-icons img.icon-wishlist,
-.header-icons img.icon-currency
+.header-icons img.icon-currency,
+.header-icons img.icon-account
 {
     height: 20px;
 }

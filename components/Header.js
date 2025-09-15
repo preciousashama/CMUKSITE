@@ -198,9 +198,11 @@ export default function Header() {
           {/* 👇 AUTH section */}
           {status === 'authenticated' ? (
             <>
+            <Link href="/account">
+              <img src="/assets/user.png" alt="account" className="icon-account" />
+              </Link>
+
               <span className="greeting">Hi, {session.user?.name?.split(' ')[0] || 'User'}!</span>
-              <Link href="/account">Account</Link>
-              <button onClick={() => signOut()} className="sign-out-btn">Sign out</button>
             </>
           ) : (
             <Link href="/login" className="sign-in-btn">
