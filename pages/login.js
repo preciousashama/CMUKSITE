@@ -26,6 +26,8 @@ export default function LoginPage() {
       redirect: false,
     });
 
+    console.log('Login result:', result);
+
     if (result?.error) {
       alert('Login failed: ' + result.error);
     } else if (result?.ok) {

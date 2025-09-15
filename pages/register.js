@@ -31,36 +31,36 @@ export default function RegisterPage() {
     setLoading(true);
     setMessage('');
 
-    try {
-      const response = await fetch('/api/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          firstName,
-          lastName,
-          email,
-          password,
-        }),
-      });
+try {
+  const response = await fetch('/api/register', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      firstName,
+      lastName,
+      email,
+      password,
+    }),
+  });
 
-      const data = await response.json();
+  const data = await response.json();
 
-      if (response.ok) {
-        setMessage('Registration successful! Redirecting to login...');
-        setTimeout(() => {
-          router.push('/login');
-        }, 2000);
-      } else {
-        setMessage(data.message || 'Registration failed');
-      }
-    } catch (error) {
-      console.error('Registration error:', error);
-      setMessage('An error occurred during registration');
-    } finally {
-      setLoading(false);
-    }
+  if (response.ok) {
+    setMessage('Registration successful! Redirecting to verification...');
+    setTimeout(() => {
+      router.push(`/verify?email=${encodeURIComponent(email)}`);
+    }, 2000);
+  } else {
+    setMessage(data.message || 'Registration failed');
+  }
+} catch (error) {
+  console.error('Registration error:', error);
+  setMessage('An error occurred during registration');
+}
+
+
   };
 
   return (

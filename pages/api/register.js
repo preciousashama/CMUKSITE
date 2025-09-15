@@ -1,6 +1,8 @@
 import { prisma } from '../../lib/prisma';
 import bcrypt from 'bcrypt';
 import cors from '../../lib/cors';
+import { sendEmail } from '../../lib/mail';
+import { generateVerificationCode } from '../../lib/generateCode';
 
 export default async function handler(req, res) {
   await cors(req, res);
@@ -17,7 +19,7 @@ export default async function handler(req, res) {
 
   try {
     const existingUser = await prisma.user.findUnique({
-      where: { email }
+      where: { email },
     });
 
     if (existingUser) {
@@ -25,23 +27,31 @@ export default async function handler(req, res) {
     }
 
     const hashedPassword = await bcrypt.hash(password, 12);
+    const verificationCode = generateVerificationCode();
+    const codeExpires = new Date(Date.now() + 15 * 60 * 1000); // 15 min
 
     const user = await prisma.user.create({
       data: {
         name: `${firstName} ${lastName}`,
         email,
         password: hashedPassword,
-      }
+        verificationCode,
+        codeExpires,
+        emailVerified: false,
+      },
     });
 
-    const { password: _, ...userWithoutPassword } = user;
-    
-    res.status(201).json({ 
-      message: 'User created successfully', 
-      user: userWithoutPassword 
+    await sendEmail({
+      to: email,
+      subject: 'Verify Your Email',
+      html: `<p>Your verification code is: <strong>${verificationCode}</strong></p><p>It will expire in 15 minutes.</p>`,
     });
+
+    res.status(201).json({ message: 'User created, verification email sent' });
+
   } catch (error) {
     console.error('Registration error:', error);
-    res.status(500).json({ message: 'Internal server error' });
+    res.status(500).json({ message: 'Internal server error', error: error.message });
+    
   }
 }

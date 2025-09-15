@@ -11,6 +11,8 @@ export default function Header() {
   const [filteredResults, setFilteredResults] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
   const { data: session, status } = useSession();
+  console.log("Session user:", session?.user);
+
 
   const handleSearchChange = (e) => {
     const term = e.target.value;

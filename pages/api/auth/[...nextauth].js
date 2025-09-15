@@ -33,7 +33,7 @@ const authHandler = async (req, res) => {
 
           try {
             const result = await pool.query(
-              "SELECT * FROM users WHERE email = $1",
+              'SELECT id, name, email, password, "emailVerified" AS emailverified FROM users WHERE email = $1',
               [email]
             );
 
@@ -48,6 +48,10 @@ const authHandler = async (req, res) => {
               return null;
             }
 
+            if (!user.emailverified) {
+              throw new Error("Please verify your email before logging in.");
+            }
+
             return {
               id: user.id.toString(),
               name: user.name,
@@ -55,7 +59,7 @@ const authHandler = async (req, res) => {
             };
           } catch (err) {
             console.error("Login error:", err);
-            return null;
+            throw new Error(err.message || "Login failed");
           }
         },
       }),
@@ -66,7 +70,19 @@ const authHandler = async (req, res) => {
     },
 
     session: {
-      strategy: "database",
+      strategy: "jwt",
+    },
+
+    callbacks: {
+      async session({ session, user }) {
+        // Attach full user info to session
+        if (user) {
+          session.user.id = user.id;
+          session.user.name = user.name;
+          session.user.email = user.email;
+        }
+        return session;
+      },
     },
   });
 };
