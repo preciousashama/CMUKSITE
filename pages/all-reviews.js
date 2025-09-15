@@ -13,7 +13,7 @@ export default function AllReviewsPage() {
   return (
     <>
       <Head>
-        <title>My Shop - All Reviews</title>
+        <title>CMUK - All Reviews</title>
       </Head>
 
       <div id="header-placeholder"></div>
