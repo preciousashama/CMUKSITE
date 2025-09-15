@@ -1,8 +1,9 @@
 import React, { useRef, useEffect } from 'react';
 import { Canvas, useLoader, useFrame } from '@react-three/fiber';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
-import { MeshStandardMaterial, Color } from 'three';
+import * as THREE from 'three';
 import { OrbitControls } from '@react-three/drei';
+
 
 function Model({ color }) {
   const gltf = useLoader(GLTFLoader, '/models/tshirt.glb');
