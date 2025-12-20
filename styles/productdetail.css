@@ -1,236 +1,226 @@
+/* 1. Base Layout & Modern Variables */
+:root {
+  --primary-blue: #0070f3;
+  --bg-canvas: #f8fafc;
+  --border-light: #e2e8f0;
+  --text-dark: #0f172a;
+  --text-muted: #64748b;
+  --shadow-ui: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
 .product-detail-page {
-  font-family: Arial, sans-serif;
-  padding: 20px;
+  font-family: 'Inter', system-ui, sans-serif;
+  color: var(--text-dark);
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0; /* Full bleed looks more professional */
 }
 
 .product-main {
-  display: flex;
-  gap: 40px;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: 1fr 450px; /* Fixed width sidebar is standard for configurators */
+  min-height: 100vh;
 }
 
+/* 2. The Visualization Studio */
 .product-canvas {
-  position: relative;
-  width: 400px;
-  height: 400px;
-  flex-shrink: 0;
-  border: 1px solid #ddd;
-  border-radius: 8px;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  background: var(--bg-canvas);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   overflow: hidden;
-  background: #f9f9f9;
+}
+
+/* 3. Artwork Placement Logic */
+/* We wrap the artwork in a container that matches the "printable area" of the 3D model */
+.artwork-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 40%; /* Represents the 'chest/front' area */
+  height: 40%;
+  pointer-events: none;
+  display: flex;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .uploaded-artwork {
-  position: absolute;
-  pointer-events: none;
-  user-select: none;
-  max-width: 100%;
-  max-height: 100%;
-  /* Adjust placement below */
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 15px rgba(0,0,0,0.1)); /* Makes logo look like it sits on fabric */
 }
 
-/* Positioning for uploaded artwork based on placement */
-.uploaded-artwork.left {
-  top: 20%;
-  left: 10%;
-  width: 30%;
-}
+/* Placement Modifiers */
+.artwork-container.left { align-items: flex-start; justify-content: flex-start; transform: translate(-80%, -50%); }
+.artwork-container.right { align-items: flex-start; justify-content: flex-end; transform: translate(-20%, -50%); }
+.artwork-container.centre { align-items: center; justify-content: center; transform: translate(-50%, -50%); }
+.artwork-container.bottom-right { align-items: flex-end; justify-content: flex-end; transform: translate(-20%, -20%); }
+.artwork-container.bottom-left { align-items: flex-end; justify-content: flex-start; transform: translate(-80%, -20%); }
 
-.uploaded-artwork.right {
-  top: 20%;
-  right: 10%;
-  width: 30%;
-}
-
-.uploaded-artwork.centre {
-  top: 25%;
-  left: 35%;
-  width: 30%;
-}
-
-.uploaded-artwork.bottom-right {
-  bottom: 10%;
-  right: 10%;
-  width: 25%;
-}
-
-.uploaded-artwork.bottom-left {
-  bottom: 10%;
-  left: 10%;
-  width: 25%;
-}
-
+/* 4. Configuration Sidebar */
 .product-info {
-  flex: 1;
-  max-width: 600px;
+  background: white;
+  padding: 40px;
+  border-left: 1px solid var(--border-light);
+  box-shadow: -10px 0 30px rgba(0,0,0,0.02);
+  overflow-y: auto;
 }
 
-h1 {
-  margin-top: 0;
-  font-size: 2rem;
+.product-info h1 {
+  font-size: 2.25rem;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  margin-bottom: 0.5rem;
 }
 
 .price {
   font-size: 1.5rem;
-  color: #222;
-  margin-bottom: 12px;
+  font-weight: 600;
+  color: var(--primary-blue);
+  margin-bottom: 2rem;
 }
 
-.description {
-  margin-bottom: 20px;
-  color: #555;
-}
-
+/* 5. Modern Option Groups */
 .option-group {
-  margin-bottom: 25px;
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #f1f5f9;
 }
 
 .side-label {
   display: block;
-  font-weight: 700;
-  margin-bottom: 10px;
-  font-size: 0.95rem;
-  color: #333;
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  margin-bottom: 16px;
 }
 
-/* Color circles container */
+/* Color Picker */
 .color-options {
   display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-/* Color circle styling */
-.color-circle {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  border: 2px solid transparent;
-  cursor: pointer;
-  transition: border-color 0.3s ease;
-  box-shadow: 0 0 3px rgb(0 0 0 / 0.15);
-}
-
-/* Selected color circle */
-.color-circle.selected {
-  border-color: #0070f3;
-  box-shadow: 0 0 6px #0070f3;
-  transform: scale(1.1);
-}
-
-/* Sizes header & inputs layout */
-.sizes-header {
-  display: flex;
-  gap: 12px;
-  margin-bottom: 6px;
-}
-
-.size-label {
-  width: 40px;
-  font-weight: 600;
-  text-align: center;
-  font-size: 0.9rem;
-}
-
-.sizes-inputs {
-  display: flex;
-  gap: 12px;
-}
-
-.sizes-inputs input[type="number"] {
-  width: 40px;
-  padding: 6px 8px;
-  font-size: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  text-align: center;
-}
-
-/* Placement options */
-.placement-options {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.placement-options label {
-  cursor: pointer;
-  padding: 6px 12px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  user-select: none;
-  transition: background-color 0.3s ease, border-color 0.3s ease;
-  font-size: 0.9rem;
-}
-
-.placement-options input[type="radio"]:checked + label {
-  background-color: #0070f3;
-  color: white;
-  border-color: #0070f3;
-}
-
-/* Action buttons */
-.action-buttons {
-  display: flex;
   gap: 16px;
-  margin-top: 15px;
 }
 
-.action-buttons button {
+.color-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
   cursor: pointer;
-  font-weight: 600;
-  background-color: #0070f3;
-  border: none;
-  color: white;
-  padding: 10px 18px;
-  border-radius: 6px;
-  font-size: 1rem;
-  transition: background-color 0.3s ease;
+  transition: transform 0.2s, box-shadow 0.2s;
+  border: 3px solid white;
+  box-shadow: 0 0 0 1px var(--border-light);
 }
 
-.action-buttons button:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
+.color-circle.selected {
+  transform: scale(1.15);
+  box-shadow: 0 0 0 2px var(--primary-blue);
 }
 
-.action-buttons button:hover:not(:disabled) {
-  background-color: #005bb5;
+/* 6. Quantity Grid */
+.sizes-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
 }
 
-/* Upload design label styling */
-.upload-buttons label {
+.size-item {
+  background: #f8fafc;
+  padding: 12px;
+  border-radius: 8px;
+  text-align: center;
+  border: 1px solid var(--border-light);
+}
+
+.size-item label {
+  display: block;
+  font-size: 0.7rem;
   font-weight: 700;
-  color: #0070f3;
-  cursor: pointer;
-  user-select: none;
+  margin-bottom: 4px;
 }
 
-/* Toast notifications */
+.size-item input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  text-align: center;
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--text-dark);
+}
+
+/* 7. Interactive Buttons */
+.action-buttons {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  margin-top: 40px;
+}
+
+.btn-primary {
+  background: var(--text-dark);
+  color: white;
+  padding: 18px;
+  border-radius: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: all 0.2s;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: #1e293b;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+}
+
+.btn-wishlist {
+  background: transparent;
+  border: 1px solid var(--border-light);
+  color: var(--text-dark);
+  padding: 12px;
+  border-radius: 12px;
+  font-weight: 600;
+}
+
+/* 8. Toast UI */
 .toast {
   position: fixed;
-  bottom: 25px;
-  left: 50%;
-  transform: translateX(-50%);
-  padding: 12px 24px;
-  border-radius: 6px;
-  font-weight: 600;
-  color: white;
-  box-shadow: 0 0 10px rgba(0,0,0,0.2);
-  z-index: 9999;
+  top: 24px;
+  right: 24px;
+  left: auto;
+  transform: none;
+  min-width: 300px;
+  background: var(--text-dark);
+  backdrop-filter: blur(10px);
+  padding: 16px 24px;
+  border-radius: 16px;
+  box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+  animation: slideIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-.toast-default {
-  background-color: #333;
+@keyframes slideIn {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
 }
 
-.toast-success {
-  background-color: #28a745;
-}
-
-.toast-error {
-  background-color: #dc3545;
-}
-
-.toast-info {
-  background-color: #17a2b8;
+/* 9. Mobile Responsiveness */
+@media (max-width: 1024px) {
+  .product-main {
+    grid-template-columns: 1fr;
+  }
+  .product-canvas {
+    height: 50vh;
+    position: relative;
+  }
+  .product-info {
+    border-left: none;
+    border-top: 1px solid var(--border-light);
+  }
 }
