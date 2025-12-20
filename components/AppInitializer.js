@@ -1,90 +1,98 @@
 'use client';
-import { useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
+
+// 1. Sub-component for Review Cards (Clean & Secure)
+const ReviewCard = ({ review, product }) => {
+  const stars = Array.from({ length: 5 }, (_, i) => (
+    <span key={i} className={`star ${i < review.rating ? 'full' : 'empty'}`}>
+      {i < review.rating ? '★' : '☆'}
+    </span>
+  ));
+
+  return (
+    <div className="featured-review-card">
+      <div className="review-header">
+        <div className="review-rating">{stars}</div>
+        <div className="review-title">{review.title}</div>
+      </div>
+      <div className="review-content">
+        <p>{review.comment.length > 150 ? review.comment.substring(0, 150) + '...' : review.comment}</p>
+      </div>
+      <div className="review-meta">
+        <span className="review-author">By {review.username}</span>
+        <span className="review-product">
+          for <a href={`/product-detail?id=${product.id}`}>{product.name}</a>
+        </span>
+      </div>
+      {review.image && (
+        <div className="review-image">
+          <img src={review.image} alt="Review" />
+        </div>
+      )}
+    </div>
+  );
+};
 
 export default function AppInitializer({ products, ReviewManager, CartManager }) {
+  const [status, setStatus] = useState({ message: '', type: '' });
+
+  // 2. Logic for top reviews (Memoized for performance)
+  const topReviews = useMemo(() => {
+    if (!ReviewManager?.reviews) return [];
+    return [...ReviewManager.reviews]
+      .sort((a, b) => b.rating - a.rating || b.helpful - a.helpful)
+      .slice(0, 3);
+  }, [ReviewManager?.reviews]);
+
   useEffect(() => {
-    console.log('Welcome to My Shop! The website is loaded and ready.');
+    // 3. Newsletter Handler
+    const handleNewsletter = (e) => {
+      e.preventDefault();
+      const email = document.getElementById('newsletter-email')?.value;
+      
+      console.log('Newsletter signup:', email);
+      setStatus({ message: 'Thank you for subscribing!', type: 'success' });
+      e.target.reset();
 
-    // Newsletter form functionality
-    const newsletterForm = document.getElementById('newsletter-form');
-    const newsletterMessage = document.getElementById('newsletter-message');
+      setTimeout(() => setStatus({ message: '', type: '' }), 3000);
+    };
 
-    if (newsletterForm) {
-      newsletterForm.addEventListener('submit', (event) => {
-        event.preventDefault();
-        const email = document.getElementById('newsletter-email').value;
-
-        console.log('Newsletter signup:', email);
-        newsletterMessage.textContent = 'Thank you for subscribing!';
-        newsletterMessage.className = 'newsletter-message success';
-        newsletterForm.reset();
-
-        setTimeout(() => {
-          newsletterMessage.textContent = '';
-          newsletterMessage.className = 'newsletter-message';
-        }, 3000);
-      });
-    }
-
-    // Featured reviews functionality
-    const featuredReviewsContainer = document.getElementById('featured-reviews-container');
-    if (featuredReviewsContainer && ReviewManager?.reviews?.length) {
-      const topReviews = ReviewManager.reviews
-        .sort((a, b) => b.rating - a.rating || b.helpful - a.helpful)
-        .slice(0, 3);
-
-      if (topReviews.length === 0) {
-        featuredReviewsContainer.innerHTML = '<p>No reviews yet.</p>';
-      } else {
-        featuredReviewsContainer.innerHTML = '';
-
-        topReviews.forEach(review => {
-          const product = products.find(p => p.id === review.productId);
-          if (!product) return;
-
-          let starsHtml = '';
-          for (let i = 0; i < 5; i++) {
-            starsHtml += i < review.rating
-              ? '<span class="star full">★</span>'
-              : '<span class="star empty">☆</span>';
-          }
-
-          const reviewCard = document.createElement('div');
-          reviewCard.className = 'featured-review-card';
-          reviewCard.innerHTML = `
-            <div class="review-header">
-              <div class="review-rating">${starsHtml}</div>
-              <div class="review-title">${review.title}</div>
-            </div>
-            <div class="review-content">
-              <p>${review.comment.length > 150 ? review.comment.substring(0, 150) + '...' : review.comment}</p>
-            </div>
-            <div class="review-meta">
-              <span class="review-author">By ${review.username}</span>
-              <span class="review-product">for <a href="/product-detail?id=${product.id}">${product.name}</a></span>
-            </div>
-            ${review.image ? `<div class="review-image"><img src="${review.image}" alt="Review image"></div>` : ''}
-          `;
-          featuredReviewsContainer.appendChild(reviewCard);
-        });
-      }
-    }
-
-    // Add to cart buttons
-    const addToCartButtons = document.querySelectorAll('.product-card .btn');
-    addToCartButtons.forEach(button => {
-      button.addEventListener('click', () => {
-        const productCard = button.closest('.product-card');
-        const productName = productCard.querySelector('h3')?.textContent;
-        const product = products.find(p => p.name === productName);
+    // 4. Global Event Delegation for "Add to Cart"
+    // Better than querySelectorAll because it handles items added to the page later
+    const handleGlobalClick = (e) => {
+      const btn = e.target.closest('.add-to-cart-btn');
+      if (btn) {
+        const productId = btn.dataset.productId;
+        const product = products.find(p => p.id === productId);
         if (product) {
           CartManager.addToCart(product.id, 1);
-          alert(`${productName} has been added to your cart!`);
+          alert(`${product.name} added to cart!`);
         }
-      });
-    });
+      }
+    };
 
-  }, [products, ReviewManager, CartManager]);
+    const form = document.getElementById('newsletter-form');
+    form?.addEventListener('submit', handleNewsletter);
+    document.addEventListener('click', handleGlobalClick);
 
-  return null; // No UI — just JS behavior
+    // CLEANUP: Removes listeners when component unmounts
+    return () => {
+      form?.removeEventListener('submit', handleNewsletter);
+      document.removeEventListener('click', handleGlobalClick);
+    };
+  }, [products, CartManager]);
+
+  // Note: For the Review Cards to appear, you would typically 
+  // render them here or use a React Portal. 
+  // If you must inject into a legacy div:
+  return (
+    <>
+      {/* This renders the message into the existing DOM flow if you place this component correctly */}
+      {status.message && (
+        <style>{`
+          #newsletter-message { display: block; color: ${status.type === 'success' ? 'green' : 'red'}; }
+        `}</style>
+      )}
+    </>
+  );
 }
