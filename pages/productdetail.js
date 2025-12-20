@@ -1,10 +1,19 @@
-import { useEffect, useState } from 'react';
-import { products } from '../data/products';
-import { WishlistManager } from '../lib/wishlist-manager';
-import { useCart } from '../lib/CartContext';
+'use client';
+
+import { useEffect, useState, useMemo, useCallback } from 'react';
+import { useSearchParams } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import React from 'react';
 
+import { products } from '../data/products';
+import { WishlistManager } from '../lib/wishlist-manager';
+import { useCart } from '../lib/CartContext';
+
+// Dynamic import for performance - 3D engines are heavy
+const ThreeCanvas = dynamic(() => import('../components/ThreeCanvas'), { 
+  ssr: false,
+  loading: () => <div className="h-full w-full bg-slate-100 animate-pulse flex items-center justify-center">Loading 3D Model...</div>
+});
 
 const COLOR_OPTIONS = [
   { name: 'Black', hex: '#000000' },
@@ -14,230 +23,227 @@ const COLOR_OPTIONS = [
   { name: 'Purple', hex: '#800080' },
 ];
 
+const PLACEMENTS = ['left', 'right', 'centre', 'bottom right', 'bottom left'];
+
 export default function ProductDetail() {
-  const ThreeCanvas = dynamic(() => import('../components/ThreeCanvas'), { ssr: false });
+  const searchParams = useSearchParams();
   const { addToCart } = useCart();
+
+  // --- Core State ---
   const [product, setProduct] = useState(null);
   const [selectedColor, setSelectedColor] = useState(COLOR_OPTIONS[0]);
   const [sizeQuantities, setSizeQuantities] = useState({});
-  const [placement, setPlacement] = useState('left');
+  const [placement, setPlacement] = useState('centre');
   const [uploadedArtworkSrc, setUploadedArtworkSrc] = useState('');
   const [toast, setToast] = useState(null);
 
+  // --- Data Initialization ---
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const idParam = params.get('id');
-    const productId = idParam ? parseInt(idParam) : null;
+    const id = searchParams.get('id');
+    const foundProduct = products.find(p => p.id === parseInt(id));
 
-    if (!productId) {
-      setProduct(null);
-      return;
+    if (foundProduct) {
+      setProduct(foundProduct);
+      
+      // Default Color Setup
+      const initialColor = COLOR_OPTIONS.find(c => c.name === foundProduct.colors?.[0]) || COLOR_OPTIONS[0];
+      setSelectedColor(initialColor);
+
+      // Dynamic Size Grid Setup
+      const isBag = foundProduct.category?.toLowerCase().includes('bag');
+      const availableSizes = isBag ? ['One Size'] : ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
+      setSizeQuantities(availableSizes.reduce((acc, size) => ({ ...acc, [size]: 0 }), {}));
+      
+      document.title = `Configure - ${foundProduct.name}`;
     }
+  }, [searchParams]);
 
-    const foundProduct = products.find(p => p.id === productId);
-    if (!foundProduct) {
-      setProduct(null);
-      return;
-    }
+  // --- Memoized Calculations ---
+  const totalQuantity = useMemo(() => 
+    Object.values(sizeQuantities).reduce((sum, qty) => sum + (parseInt(qty) || 0), 0)
+  , [sizeQuantities]);
 
-    setProduct(foundProduct);
+  const subtotal = useMemo(() => (product?.price || 0) * totalQuantity, [product, totalQuantity]);
 
-    const defaultColorName = foundProduct.colors?.[0] || 'Black';
-    const defaultColorObj = COLOR_OPTIONS.find(c => c.name === defaultColorName) || COLOR_OPTIONS[0];
-    setSelectedColor(defaultColorObj);
-
-    const isBag = foundProduct.category?.toLowerCase().includes('bag');
-    const sizes = isBag ? ['One Size'] : ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
-    const initialQuantities = {};
-    sizes.forEach(size => (initialQuantities[size] = 0));
-    setSizeQuantities(initialQuantities);
-
-    document.title = `My Shop - ${foundProduct.name}`;
+  // --- Handlers ---
+  const handleQuantityChange = useCallback((size, val) => {
+    const quantity = Math.max(0, parseInt(val) || 0);
+    setSizeQuantities(prev => ({ ...prev, [size]: quantity }));
   }, []);
 
-  if (!product) {
-    return <p>Product not found.</p>;
-  }
+  const handleFileUpload = (e) => {
+    const file = e.target.files[0];
+    if (file && file.type.startsWith('image/')) {
+      const reader = new FileReader();
+      reader.onload = (event) => setUploadedArtworkSrc(event.target.result);
+      reader.readAsDataURL(file);
+    }
+  };
 
-  const isBag = product.category?.toLowerCase().includes('bag');
-  const sizes = isBag ? ['One Size'] : ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
-
-  const colors = (product.colors || COLOR_OPTIONS.map(c => c.name)).map(colorName => {
-    return COLOR_OPTIONS.find(c => c.name === colorName) || { name: colorName, hex: '#000000' };
-  });
-
-  const placements = ['left', 'right', 'centre', 'bottom right', 'bottom left'];
-
-  const totalQuantity = Object.values(sizeQuantities).reduce((sum, val) => sum + (parseInt(val) || 0), 0);
-  const subtotal = totalQuantity * product.price;
-
-  function formatPrice(price) {
-    return new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(price);
-  }
-
-  function showToast(message, type = 'default') {
-    setToast({ message, type });
-    setTimeout(() => setToast(null), 3000);
-  }
-
-  function onQuantityChange(size, value) {
-    const val = Math.max(0, Number(value) || 0);
-    setSizeQuantities(prev => ({ ...prev, [size]: val }));
-  }
-
-  function handleAddToCart() {
+  const onAddToCart = () => {
     if (totalQuantity === 0) {
-      showToast('Please select at least one size and quantity', 'error');
+      triggerToast('Please select quantities first', 'error');
       return;
     }
-    Object.entries(sizeQuantities).forEach(([size, quantity]) => {
-      if (quantity > 0) {
-        addToCart(product, quantity, { color: selectedColor.name, size });
+
+    Object.entries(sizeQuantities).forEach(([size, qty]) => {
+      if (qty > 0) {
+        addToCart(product, qty, { 
+          color: selectedColor.name, 
+          size, 
+          customArtwork: uploadedArtworkSrc ? 'Custom' : 'None',
+          placement 
+        });
       }
     });
-    showToast(`${totalQuantity} item(s) added to bag`, 'success');
-  }
+    triggerToast(`Added ${totalQuantity} items to bag`, 'success');
+  };
 
-  function toggleWishlist() {
-    if (WishlistManager.isInWishlist(product.id)) {
-      WishlistManager.removeFromWishlist(product.id);
-      showToast('Removed from wishlist', 'info');
-    } else {
-      WishlistManager.addToWishlist(product.id);
-      showToast('Added to wishlist', 'success');
-    }
-  }
+  const triggerToast = (message, type) => {
+    setToast({ message, type });
+    setTimeout(() => setToast(null), 3000);
+  };
 
-  function handleDesignUpload(event) {
-    const file = event.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = e => setUploadedArtworkSrc(e.target.result);
-    reader.readAsDataURL(file);
-  }
-
-  function handlePlacementChange(e) {
-    setPlacement(e.target.value);
-  }
+  if (!product) return <div className="p-20 text-center">Product Not Found</div>;
 
   return (
-    <div className="product-detail-page">
-      <main className="product-main">
-        <div className="product-canvas">
+    <div className="min-h-screen bg-white">
+      <div className="flex flex-col lg:flex-row min-h-screen">
+        
+        {/* LEFT: 3D Visualization Visualizer */}
+        <section className="w-full lg:w-3/5 bg-slate-50 relative sticky top-0 h-[60vh] lg:h-screen">
           <ThreeCanvas color={selectedColor.hex} />
+          
+          {/* Overlay Artwork Preview */}
           {uploadedArtworkSrc && (
-            <img
-              src={uploadedArtworkSrc}
-              alt="Uploaded artwork"
-              className={`uploaded-artwork ${placement.replace(/\s+/g, '-')}`}
-              style={{ position: 'absolute', top: 0, left: 0, width: '100%', pointerEvents: 'none', userSelect: 'none' }}
-            />
+            <div className={`absolute inset-0 pointer-events-none flex items-center justify-center p-20`}>
+              <div className={`transition-all duration-500 artwork-container placement-${placement.replace(' ', '-')}`}>
+                <img 
+                  src={uploadedArtworkSrc} 
+                  alt="Custom design" 
+                  className="max-w-[150px] lg:max-w-[250px] object-contain shadow-2xl rounded-sm border-2 border-white/20"
+                />
+              </div>
+            </div>
           )}
-        </div>
 
-        <div className="product-info">
-          <h1>{product.name}</h1>
-          <p className="price">{formatPrice(product.price)}</p>
-          <p className="description">{product.description}</p>
-
-          <div className="option-group">
-            <label className="side-label">1. SELECT COLOR</label>
-            <div className="color-options">
-              {colors.map(color => (
-                <div
-                  key={color.name}
-                  className={`color-circle ${selectedColor.name === color.name ? 'selected' : ''}`}
-                  style={{ backgroundColor: color.hex }}
-                  onClick={() => setSelectedColor(color)}
-                  title={color.name}
-                  role="button"
-                  tabIndex={0}
-                  onKeyDown={e => {
-                    if (e.key === 'Enter' || e.key === ' ') setSelectedColor(color);
-                  }}
-                />
-              ))}
-            </div>
+          {/* Configuration Summary Badge */}
+          <div className="absolute bottom-6 left-6 bg-white/80 backdrop-blur px-4 py-2 rounded-full border text-xs font-bold tracking-widest uppercase">
+            Live Preview: {selectedColor.name} | {placement}
           </div>
+        </section>
 
-          <div className="option-group sizes-quantity">
-            <label className="side-label">2. SELECT SIZE & QUANTITY</label>
-            <div className="sizes-header">
-              {sizes.map(size => (
-                <div key={size} className="size-label">{size}</div>
-              ))}
-            </div>
-            <div className="sizes-inputs">
-              {sizes.map(size => (
-                <input
-                  key={size}
-                  type="number"
-                  min={0}
-                  max={100}
-                  value={sizeQuantities[size]}
-                  onChange={e => onQuantityChange(size, e.target.value)}
-                  aria-label={`Quantity for size ${size}`}
-                />
-              ))}
-            </div>
-          </div>
+        {/* RIGHT: Configuration Sidebar */}
+        <section className="w-full lg:w-2/5 p-8 lg:p-12 overflow-y-auto">
+          <header className="mb-10">
+            <h1 className="text-4xl font-black uppercase tracking-tighter mb-2">{product.name}</h1>
+            <p className="text-2xl text-blue-600 font-light">
+              {new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(product.price)}
+            </p>
+          </header>
 
-          <div className="option-group">
-            <label className="side-label">3. SELECT PLACEMENT</label>
-            <div className="placement-options">
-              {placements.map(pos => (
-                <React.Fragment key={pos}>
-                  <input
-                    type="radio"
-                    id={`placement-${pos}`}
-                    name="placement"
-                    value={pos}
-                    checked={placement === pos}
-                    onChange={handlePlacementChange}
-                    style={{ display: 'none' }}
+          <div className="space-y-12">
+            
+            {/* 1. Color Picker */}
+            <div className="space-y-4">
+              <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest">1. Fabric Color</h3>
+              <div className="flex flex-wrap gap-4">
+                {COLOR_OPTIONS.map(c => (
+                  <button
+                    key={c.name}
+                    onClick={() => setSelectedColor(c)}
+                    className={`w-12 h-12 rounded-full border-2 transition-all transform hover:scale-110 ${selectedColor.name === c.name ? 'border-blue-600 ring-4 ring-blue-100' : 'border-transparent'}`}
+                    style={{ backgroundColor: c.hex }}
+                    title={c.name}
                   />
-                  <label htmlFor={`placement-${pos}`}>{pos}</label>
-                </React.Fragment>
-              ))}
+                ))}
+              </div>
+            </div>
+
+            {/* 2. Custom Artwork Upload */}
+            <div className="space-y-4">
+              <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest">2. Your Design</h3>
+              <div className="flex items-center gap-4">
+                <label className="flex-1 border-2 border-dashed border-slate-200 rounded-xl p-6 text-center cursor-pointer hover:bg-slate-50 transition-colors">
+                  <input type="file" className="hidden" onChange={handleFileUpload} accept="image/*" />
+                  <span className="text-sm font-bold text-slate-600">
+                    {uploadedArtworkSrc ? 'Change Artwork' : 'Upload PNG/JPG'}
+                  </span>
+                </label>
+                {uploadedArtworkSrc && (
+                  <button onClick={() => setUploadedArtworkSrc('')} className="text-red-500 text-xs font-bold">Remove</button>
+                )}
+              </div>
+            </div>
+
+            {/* 3. Placement Selection */}
+            {uploadedArtworkSrc && (
+              <div className="space-y-4 animate-in fade-in slide-in-from-top-2">
+                <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest">3. Logo Placement</h3>
+                <div className="grid grid-cols-3 gap-2">
+                  {PLACEMENTS.map(pos => (
+                    <button
+                      key={pos}
+                      onClick={() => setPlacement(pos)}
+                      className={`py-2 px-3 border rounded-lg text-[10px] font-bold uppercase transition-all ${placement === pos ? 'bg-slate-900 text-white border-slate-900' : 'bg-white text-slate-500 hover:border-slate-400'}`}
+                    >
+                      {pos}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* 4. Multi-Size Quantity Grid */}
+            <div className="space-y-4">
+              <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest">4. Quantities</h3>
+              <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
+                {Object.keys(sizeQuantities).map(size => (
+                  <div key={size} className="text-center">
+                    <div className="text-[10px] font-black mb-1">{size}</div>
+                    <input
+                      type="number"
+                      value={sizeQuantities[size]}
+                      onChange={(e) => handleQuantityChange(size, e.target.value)}
+                      className="w-full border rounded-md p-2 text-center text-sm font-bold focus:ring-2 focus:ring-blue-500 outline-none"
+                    />
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
 
-          <div className="option-group">
-            <div><strong>Unit Price:</strong> {formatPrice(product.price)}</div>
-            <div><strong>Subtotal:</strong> {formatPrice(subtotal)}</div>
-          </div>
+          {/* Checkout Footer */}
+          <footer className="mt-16 pt-8 border-t border-slate-100">
+            <div className="flex items-end justify-between mb-6">
+              <div>
+                <p className="text-xs font-bold text-slate-400 uppercase">Total Items: {totalQuantity}</p>
+                <p className="text-3xl font-black text-slate-900">
+                  {new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(subtotal)}
+                </p>
+              </div>
+              <button 
+                onClick={toggleWishlist}
+                className="text-slate-400 hover:text-red-500 transition-colors"
+              >
+                {WishlistManager.isInWishlist(product.id) ? '❤️' : '♡'}
+              </button>
+            </div>
 
-          <div className="action-buttons">
-            <button onClick={handleAddToCart} disabled={totalQuantity === 0}>
-              ADD TO BAG
+            <button
+              onClick={onAddToCart}
+              disabled={totalQuantity === 0}
+              className={`w-full py-5 rounded-2xl font-black tracking-widest uppercase transition-all ${totalQuantity > 0 ? 'bg-blue-600 text-white shadow-xl shadow-blue-200 hover:bg-blue-700 hover:-translate-y-1' : 'bg-slate-100 text-slate-400 cursor-not-allowed'}`}
+            >
+              Add to Bag
             </button>
-            <button onClick={toggleWishlist}>
-              {WishlistManager.isInWishlist(product.id) ? 'REMOVE FROM WISHLIST' : 'ADD TO WISHLIST'}
-            </button>
-          </div>
+          </footer>
+        </section>
+      </div>
 
-          <div className="upload-buttons" style={{ marginTop: '15px' }}>
-            <input
-              type="file"
-              id="design-upload"
-              accept="image/*"
-              style={{ display: 'none' }}
-              onChange={handleDesignUpload}
-            />
-            <label htmlFor="design-upload" style={{ cursor: 'pointer', fontWeight: '600', color: '#0070f3' }}>
-              UPLOAD YOUR DESIGN
-            </label>
-          </div>
-        </div>
-      </main>
-
+      {/* Toast Notification */}
       {toast && (
-        <div
-          role="alert"
-          aria-live="assertive"
-          className={`toast toast-${toast.type}`}
-          tabIndex={-1}
-        >
+        <div className={`fixed bottom-8 right-8 px-8 py-4 rounded-2xl text-white font-bold shadow-2xl animate-in slide-in-from-bottom-5 duration-300 z-50 ${toast.type === 'success' ? 'bg-emerald-500' : 'bg-slate-900'}`}>
           {toast.message}
         </div>
       )}
