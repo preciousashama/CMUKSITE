@@ -1,327 +1,178 @@
-/* CSS CODE */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+/* 1. System Design Tokens */
+:root {
+  --primary: #0f172a;    /* Slate 900 */
+  --accent: #10b981;     /* Emerald 500 (Success) */
+  --text-main: #334155;  /* Slate 700 */
+  --text-muted: #64748b; /* Slate 500 */
+  --bg-app: #f8fafc;     /* Slate 50 */
+  --bg-card: #ffffff;
+  --radius-lg: 16px;
+  --radius-md: 12px;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+  --shadow-md: 0 10px 25px -5px rgba(0,0,0,0.05), 0 8px 10px -6px rgba(0,0,0,0.05);
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 body {
-    font-family: 'Arial', sans-serif;
-    line-height: 1.6;
-    color: #333;
-    min-height: 100vh;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: var(--bg-app);
+  color: var(--text-main);
+  -webkit-font-smoothing: antialiased;
 }
 
 .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem;
 }
 
+/* 2. Fluid Header */
 .header {
-    text-align: center;
-    padding: 40px 0;
-    color: rgb(0, 0, 0);
+  text-align: center;
+  padding: 4rem 1rem;
 }
 
 .header h1 {
-    font-size: 3rem;
-    margin-bottom: 10px;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  color: var(--primary);
+  margin-bottom: 1rem;
 }
 
-.header p {
-    font-size: 1.2rem;
-    opacity: 0.9;
-}
-
+/* 3. High-End Progress Bar */
 .progress-bar {
-    width: 100%;
-    height: 8px;
-    background-color: rgba(255,255,255,0.3);
-    border-radius: 4px;
-    margin: 30px 0;
-    overflow: hidden;
+  width: 100%;
+  height: 12px;
+  background-color: #e2e8f0;
+  border-radius: 100px;
+  margin: 2rem 0;
+  padding: 3px; /* Creates a "track" effect */
 }
 
 .progress-fill {
-    height: 100%;
-    background: linear-gradient(135deg, #000000, #8b8b8b);
-    border-radius: 4px;
-    transition: width 0.5s ease;
-    width: 25%;
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary), #475569);
+  border-radius: 100px;
+  transition: width 0.8s cubic-bezier(0.65, 0, 0.35, 1);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
+/* 4. Steps Layout */
 .steps-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 30px;
-    margin: 50px 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+  margin: 3rem 0;
 }
 
 .step-card {
-    background: white;
-    padding: 30px;
-    border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-    text-align: center;
-    position: relative;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background: var(--bg-card);
+  padding: 2rem;
+  border-radius: var(--radius-lg);
+  border: 1px solid #e2e8f0;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
 }
 
 .step-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-md);
+  border-color: #cbd5e1;
 }
 
+/* Completed State - Clean & High Contrast */
 .step-card.completed {
-    background: linear-gradient(135deg, #000000, #ffffff);
-    color: white;
-}
-
-.step-card.completed .step-number {
-    background: white;
-    color: #000000;
+  border-color: var(--accent);
+  background-color: #f0fdf4; /* Very light green */
 }
 
 .step-number {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 60px;
-    height: 60px;
-    color: white;
-    border-radius: 50%;
-    font-size: 1.5rem;
-    font-weight: bold;
-    margin-bottom: 20px;
+  width: 48px;
+  height: 48px;
+  background: var(--primary);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  transition: var(--transition);
 }
 
-.step-card h3 {
-    color: #333;
-    margin-bottom: 15px;
-    font-size: 1.3rem;
+.step-card.completed .step-number {
+  background: var(--accent);
+  transform: scale(1.1);
 }
 
-.step-card.completed h3 {
-    color: white;
+/* 5. Modern Forms */
+.form-group label {
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
 }
 
-.step-card p {
-    color: #666;
-    margin-bottom: 20px;
+.form-group input, 
+.form-group select, 
+.form-group textarea {
+  border: 1.5px solid #e2e8f0;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-md);
+  transition: var(--transition);
 }
 
-.step-card.completed p {
-    color: rgba(255,255,255,0.9);
+.form-group input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px rgba(15, 23, 42, 0.1);
 }
 
+/* 6. Buttons */
 .step-button {
-    background:  #000000;
-    color: white;
-    border: none;
-    padding: 12px 25px;
-    border-radius: 25px;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    margin: 5px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  padding: 0.75rem 1.5rem;
+  border-radius: 100px; /* Pill shape */
+  background: var(--primary);
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: var(--transition);
 }
 
 .step-button:hover:not(:disabled) {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  background: #1e293b;
+  transform: translateY(-1px);
 }
 
 .step-button:disabled {
-    background: #ccc;
-    cursor: not-allowed;
-    transform: none;
-    box-shadow: none;
+  background: #cbd5e1;
+  color: #94a3b8;
+  cursor: not-allowed;
 }
 
-.cancel-btn {
-    background: #e74c3c;
-}
-
-.cancel-btn:hover {
-    background: #c0392b;
-}
-
-/* Form Styles */
-.form-container {
-    display: none;
-    background: white;
-    padding: 40px;
-    border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-    margin: 30px 0;
-}
-
-.form-container h2 {
-    text-align: center;
-    margin-bottom: 30px;
-    color: #333;
-}
-
-.form-group {
-    margin-bottom: 20px;
-}
-
-.form-group label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: bold;
-    color: #333;
-}
-
-.form-group input,
-.form-group textarea,
-.form-group select {
-    width: 100%;
-    padding: 12px;
-    border: 2px solid #e1e1e1;
-    border-radius: 8px;
-    font-size: 1rem;
-    transition: border-color 0.3s ease;
-}
-
-.form-group textarea {
-    resize: vertical;
-    min-height: 100px;
-}
-
-.form-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-}
-
-.form-actions {
-    text-align: center;
-    margin-top: 30px;
-}
-
-/* Modal Styles */
+/* 7. Modal Glassmorphism */
 .modal {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0,0,0,0.5);
-    animation: fadeIn 0.3s ease;
+  background-color: rgba(15, 23, 42, 0.4);
+  backdrop-filter: blur(4px);
 }
 
 .modal-content {
-    position: relative;
-    background-color: white;
-    margin: 5% auto;
-    padding: 40px;
-    border-radius: 15px;
-    width: 90%;
-    max-width: 600px;
-    text-align: center;
-    animation: slideIn 0.3s ease;
+  border: none;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  border-radius: 24px;
 }
 
-.close {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-    cursor: pointer;
-    position: absolute;
-    right: 20px;
-    top: 15px;
-}
-
-.close:hover {
-    color: #333;
-}
-
-.time-slots {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
-    margin: 20px 0;
-}
-
-.time-slot {
-    padding: 12px;
-    border: 2px solid #e1e1e1;
-    background: white;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.time-slot:hover {
-    border-color: #000000;
-}
-
-.time-slot.selected {
-    
-    color: white;
-}
-
-.draft-preview {
-    margin: 20px 0;
-}
-
-.draft-placeholder {
-    background: #f8f9fa;
-    border: 2px dashed #dee2e6;
-    padding: 60px 20px;
-    border-radius: 8px;
-    font-size: 2rem;
-    color: #6c757d;
-}
-
-.download-links {
-    display: flex;
-    gap: 10px;
-    justify-content: center;
-    flex-wrap: wrap;
-}
-
-/* Animations */
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-@keyframes slideIn {
-    from { transform: translateY(-50px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    .header h1 {
-        font-size: 2rem;
-    }
-    
-    .form-row {
-        grid-template-columns: 1fr;
-    }
-    
-    .steps-container {
-        grid-template-columns: 1fr;
-    }
-    
-    .time-slots {
-        grid-template-columns: 1fr;
-    }
-    
-    .download-links {
-        flex-direction: column;
-    }
-    
-    .modal-content {
-        padding: 20px;
-        margin: 10% auto;
-    }
+/* Responsive Overrides */
+@media (max-width: 640px) {
+  .container { padding: 1rem; }
+  .form-row { grid-template-columns: 1fr; }
+  .step-card { padding: 1.5rem; }
 }
