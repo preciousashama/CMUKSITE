@@ -1,43 +1,44 @@
-// generator and datasource remain the same as your input
+generator client {
+  provider = "prisma-client-api"
+}
+
+datasource db {
+  provider = "postgresql" // or "mysql" / "sqlite"
+  url      = env("DATABASE_URL")
+}
 
 model User {
-  id               String    @id @default(uuid())
-  firstName        String?   
+  id               String         @id @default(uuid())
+  firstName        String?
   lastName         String?
-  name             String?   // Kept for NextAuth compatibility
-  email            String    @unique
+  name             String?        // NextAuth
+  email            String         @unique
   password         String
-  role             Role      @default(CUSTOMER)
-  
-  // Verification
+  role             Role           @default(CUSTOMER)
   verificationCode String?
   codeExpires      DateTime?
-  emailVerified    Boolean   @default(false)
-  
-  // Relations
+  emailVerified    Boolean        @default(false)
   orders           Order[]
   designs          SavedDesign[]
-  createdAt        DateTime  @default(now())
-  updatedAt        DateTime  @updatedAt
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
 
   @@map("users")
 }
 
 model Product {
-  id          String    @id @default(uuid())
-  sku         String    @unique
+  id          String           @id @default(uuid())
+  sku         String           @unique
   name        String
-  slug        String    @unique
-  description String    @db.Text
+  slug        String           @unique
+  description String           @db.Text
   basePrice   Float
-  image       String    // Primary thumbnail
+  image       String           
   category    String
-  inStock     Boolean   @default(true)
-  
-  // Relations
+  inStock     Boolean          @default(true)
   variants    ProductVariant[]
   orderItems  OrderItem[]
-  createdAt   DateTime  @default(now())
+  createdAt   DateTime         @default(now())
 }
 
 model ProductVariant {
@@ -47,47 +48,46 @@ model ProductVariant {
   color     String
   size      String
   stock     Int      @default(0)
-  image     String?  // Color-specific image
+  image     String?  
 }
 
 model Order {
-  id              String      @id @default(uuid())
-  orderNumber     Int         @unique @default(autoincrement())
+  id              String       @id @default(uuid())
+  orderNumber     Int          @unique @default(autoincrement())
   userId          String
-  user            User        @relation(fields: [userId], references: [id])
-  status          OrderStatus @default(PENDING)
+  user            User         @relation(fields: [userId], references: [id])
+  status          OrderStatus  @default(PENDING)
   totalAmount     Float
-  stripeLinkId    String?     @unique // For tracking payments
-  
-  // Shipping
+  stripeLinkId    String?      @unique 
   shippingAddress String
   city            String
   postcode        String
   phone           String
-
   items           OrderItem[]
-  createdAt       DateTime    @default(now())
+  createdAt       DateTime     @default(now())
 }
 
 model OrderItem {
-  id           String  @id @default(uuid())
-  orderId      String
-  order        Order   @relation(fields: [orderId], references: [id])
-  productId    String
-  product      Product @relation(fields: [productId], references: [id])
-  quantity     Int
-  priceAtSale  Float   // Important: Capture price at time of purchase
+  id          String   @id @default(uuid())
+  orderId     String
+  order       Order    @relation(fields: [orderId], references: [id])
+  productId   String
+  product     Product  @relation(fields: [productId], references: [id])
+  quantity    Int
+  priceAtSale Float
   
-  // For Customisation
-  customJson   Json?   // Stores the 3D studio coordinates/text/images
+  // CUSTOMIZATION PAYLOAD
+  // Expected format: { logoUrl: string, hexColor: string, placement: string, sizeBreakdown: object }
+  customJson  Json?    
 }
 
 model SavedDesign {
-  id        String   @id @default(uuid())
-  userId    String
-  user      User     @relation(fields: [userId], references: [id])
-  designData Json
-  previewUrl String?
+  id         String   @id @default(uuid())
+  name       String?  @default("My Custom Design")
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+  designData Json     // Stores the state from the 3D Studio
+  previewUrl String?  // URL to a generated thumbnail
   createdAt  DateTime @default(now())
 }
 
