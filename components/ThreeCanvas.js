@@ -1,42 +1,95 @@
-import React, { useRef, useEffect } from 'react';
-import { Canvas, useLoader, useFrame } from '@react-three/fiber';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+'use client';
+
+import React, { useRef, useMemo } from 'react';
+import { Canvas, useFrame } from '@react-three/fiber';
+import { 
+  useGLTF, 
+  OrbitControls, 
+  ContactShadows, 
+  Environment, 
+  Decal, 
+  useTexture,
+  Float
+} from '@react-three/drei';
 import * as THREE from 'three';
-import { OrbitControls } from '@react-three/drei';
 
+function ShirtModel({ color, customLogo, decalPosition = [0, 0.04, 0.15], decalScale = 0.15 }) {
+  // 1. Efficient loading with caching
+  const { nodes, materials } = useGLTF('/models/tshirt.glb');
+  
+  // 2. Load the custom logo texture if provided
+  const texture = customLogo ? useTexture(customLogo) : null;
 
-function Model({ color }) {
-  const gltf = useLoader(GLTFLoader, '/models/tshirt.glb');
-  const meshRef = useRef();
+  // 3. Smoothly update color without cloning on every frame
+  useMemo(() => {
+    if (materials.lambert1) { // Replace 'lambert1' with your model's actual material name
+      materials.lambert1.color = new THREE.Color(color);
+      materials.lambert1.roughness = 0.7; // Make it look more like fabric
+    }
+  }, [color, materials]);
 
-  // Apply color to the mesh material on every frame or when color changes
-  useEffect(() => {
-    if (!gltf) return;
-    gltf.scene.traverse((child) => {
-      if (child.isMesh) {
-        // Clone material so we don't overwrite original
-        child.material = child.material.clone();
-        child.material.color = new Color(color);
-        child.material.needsUpdate = true;
-      }
-    });
-  }, [gltf, color]);
-
-  return <primitive ref={meshRef} object={gltf.scene} />;
+  return (
+    <group>
+      <mesh
+        castShadow
+        receiveShadow
+        geometry={nodes.T_Shirt.geometry} // Replace 'T_Shirt' with your node name
+        material={materials.lambert1}
+        dispose={null}
+      >
+        {/* 4. THE DECAL: This is how you put the design ON the shirt */}
+        {texture && (
+          <Decal
+            position={decalPosition} // [x, y, z]
+            rotation={[0, 0, 0]}
+            scale={decalScale}
+            map={texture}
+            // Ensure decal doesn't "bleed" through to the back
+            depthTest={true}
+            depthWrite={false}
+          />
+        )}
+      </mesh>
+    </group>
+  );
 }
 
-export default function ThreeCanvas({ color }) {
+export default function ThreeCanvas({ color = "#ffffff", logoUrl = null }) {
   return (
-    <Canvas
-      shadows
-      camera={{ position: [0, 0, 3], fov: 35 }}
-      style={{ width: '100%', height: '400px' }}
-    >
-      <ambientLight intensity={0.8} />
-      <directionalLight position={[5, 5, 5]} intensity={1.2} />
-      <pointLight position={[-5, -5, -5]} intensity={0.5} />
-      <Model color={color} />
-      <OrbitControls enableZoom={false} enablePan={false} />
-    </Canvas>
+    <div className="w-full h-[500px] bg-slate-50 rounded-3xl overflow-hidden cursor-grab active:cursor-grabbing border border-slate-200 shadow-inner">
+      <Canvas
+        shadows
+        camera={{ position: [0, 0, 0.5], fov: 25 }}
+        gl={{ preserveDrawingBuffer: true }} // Required for saving screenshots of designs
+      >
+        <ambientLight intensity={0.5} />
+        
+        {/* Professional Environment Lighting */}
+        <Environment preset="city" />
+        
+        <Float speed={2} rotationIntensity={0.5} floatIntensity={0.5}>
+          <ShirtModel color={color} customLogo={logoUrl} />
+        </Float>
+
+        <ContactShadows 
+          position={[0, -0.15, 0]} 
+          opacity={0.4} 
+          scale={2.5} 
+          blur={2} 
+          far={1} 
+        />
+        
+        <OrbitControls 
+          enableZoom={true} 
+          minPolarAngle={Math.PI / 2.5} 
+          maxPolarAngle={Math.PI / 2} 
+        />
+      </Canvas>
+      
+      {/* UI Overlay Hint */}
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-[10px] font-black uppercase tracking-widest text-slate-400 pointer-events-none">
+        ← Click & Drag to Rotate →
+      </div>
+    </div>
   );
 }
