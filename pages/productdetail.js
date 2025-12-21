@@ -1,252 +1,166 @@
 'use client';
 
-import { useEffect, useState, useMemo, useCallback } from 'react';
-import { useSearchParams } from 'next/navigation';
+import React, { useState, useMemo, useCallback } from 'react';
 import dynamic from 'next/dynamic';
-import React from 'react';
-
-import { products } from '../data/products';
-import { WishlistManager } from '../lib/wishlist-manager';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useCart } from '../lib/CartContext';
+import { formatCurrency } from '../lib/utils'; // Using the utility we created earlier
 
-// Dynamic import for performance - 3D engines are heavy
+// 3D Engine with specific fallback for SEO
 const ThreeCanvas = dynamic(() => import('../components/ThreeCanvas'), { 
   ssr: false,
-  loading: () => <div className="h-full w-full bg-slate-100 animate-pulse flex items-center justify-center">Loading 3D Model...</div>
+  loading: () => <div className="h-full w-full bg-slate-50 animate-pulse flex items-center justify-center text-slate-300 font-black italic">INITIALIZING 3D ENGINE...</div>
 });
 
-const COLOR_OPTIONS = [
-  { name: 'Black', hex: '#000000' },
-  { name: 'White', hex: '#FFFFFF' },
-  { name: 'Red', hex: '#FF0000' },
-  { name: 'Blue', hex: '#0000FF' },
-  { name: 'Purple', hex: '#800080' },
-];
+const SIZES = ['XS', 'S', 'M', 'L', 'XL', 'XXL', '3XL'];
 
-const PLACEMENTS = ['left', 'right', 'centre', 'bottom right', 'bottom left'];
-
-export default function ProductDetail() {
-  const searchParams = useSearchParams();
+export default function ProductDetail({ initialProduct }) {
   const { addToCart } = useCart();
+  
+  // 1. Unified Configuration State
+  const [config, setConfig] = useState({
+    color: { name: 'Pitch Black', hex: '#000000' },
+    quantities: SIZES.reduce((acc, s) => ({ ...acc, [s]: 0 }), {}),
+    artwork: null, // Stores { file, previewUrl, scale, position }
+    placement: 'center'
+  });
 
-  // --- Core State ---
-  const [product, setProduct] = useState(null);
-  const [selectedColor, setSelectedColor] = useState(COLOR_OPTIONS[0]);
-  const [sizeQuantities, setSizeQuantities] = useState({});
-  const [placement, setPlacement] = useState('centre');
-  const [uploadedArtworkSrc, setUploadedArtworkSrc] = useState('');
-  const [toast, setToast] = useState(null);
+  // 2. Business Logic: Bulk Discount Tiers
+  const totalQty = useMemo(() => Object.values(config.quantities).reduce((a, b) => a + b, 0), [config.quantities]);
+  
+  const unitPrice = useMemo(() => {
+    let price = initialProduct?.price || 24.99;
+    if (totalQty >= 50) price *= 0.80; // 20% off for 50+
+    else if (totalQty >= 12) price *= 0.90; // 10% off for 12+
+    return price;
+  }, [totalQty, initialProduct]);
 
-  // --- Data Initialization ---
-  useEffect(() => {
-    const id = searchParams.get('id');
-    const foundProduct = products.find(p => p.id === parseInt(id));
-
-    if (foundProduct) {
-      setProduct(foundProduct);
-      
-      // Default Color Setup
-      const initialColor = COLOR_OPTIONS.find(c => c.name === foundProduct.colors?.[0]) || COLOR_OPTIONS[0];
-      setSelectedColor(initialColor);
-
-      // Dynamic Size Grid Setup
-      const isBag = foundProduct.category?.toLowerCase().includes('bag');
-      const availableSizes = isBag ? ['One Size'] : ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
-      setSizeQuantities(availableSizes.reduce((acc, size) => ({ ...acc, [size]: 0 }), {}));
-      
-      document.title = `Configure - ${foundProduct.name}`;
-    }
-  }, [searchParams]);
-
-  // --- Memoized Calculations ---
-  const totalQuantity = useMemo(() => 
-    Object.values(sizeQuantities).reduce((sum, qty) => sum + (parseInt(qty) || 0), 0)
-  , [sizeQuantities]);
-
-  const subtotal = useMemo(() => (product?.price || 0) * totalQuantity, [product, totalQuantity]);
-
-  // --- Handlers ---
-  const handleQuantityChange = useCallback((size, val) => {
-    const quantity = Math.max(0, parseInt(val) || 0);
-    setSizeQuantities(prev => ({ ...prev, [size]: quantity }));
-  }, []);
+  // 3. Handlers
+  const handleQtyChange = (size, value) => {
+    const val = Math.max(0, parseInt(value) || 0);
+    setConfig(prev => ({ ...prev, quantities: { ...prev.quantities, [size]: val } }));
+  };
 
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
-    if (file && file.type.startsWith('image/')) {
-      const reader = new FileReader();
-      reader.onload = (event) => setUploadedArtworkSrc(event.target.result);
-      reader.readAsDataURL(file);
+    if (file) {
+      const previewUrl = URL.createObjectURL(file);
+      setConfig(prev => ({ ...prev, artwork: { file, previewUrl } }));
     }
   };
-
-  const onAddToCart = () => {
-    if (totalQuantity === 0) {
-      triggerToast('Please select quantities first', 'error');
-      return;
-    }
-
-    Object.entries(sizeQuantities).forEach(([size, qty]) => {
-      if (qty > 0) {
-        addToCart(product, qty, { 
-          color: selectedColor.name, 
-          size, 
-          customArtwork: uploadedArtworkSrc ? 'Custom' : 'None',
-          placement 
-        });
-      }
-    });
-    triggerToast(`Added ${totalQuantity} items to bag`, 'success');
-  };
-
-  const triggerToast = (message, type) => {
-    setToast({ message, type });
-    setTimeout(() => setToast(null), 3000);
-  };
-
-  if (!product) return <div className="p-20 text-center">Product Not Found</div>;
 
   return (
-    <div className="min-h-screen bg-white">
-      <div className="flex flex-col lg:flex-row min-h-screen">
-        
-        {/* LEFT: 3D Visualization Visualizer */}
-        <section className="w-full lg:w-3/5 bg-slate-50 relative sticky top-0 h-[60vh] lg:h-screen">
-          <ThreeCanvas color={selectedColor.hex} />
-          
-          {/* Overlay Artwork Preview */}
-          {uploadedArtworkSrc && (
-            <div className={`absolute inset-0 pointer-events-none flex items-center justify-center p-20`}>
-              <div className={`transition-all duration-500 artwork-container placement-${placement.replace(' ', '-')}`}>
-                <img 
-                  src={uploadedArtworkSrc} 
-                  alt="Custom design" 
-                  className="max-w-[150px] lg:max-w-[250px] object-contain shadow-2xl rounded-sm border-2 border-white/20"
-                />
+    <div className="flex flex-col lg:flex-row h-screen bg-white overflow-hidden">
+      
+      {/* VISUALIZER SECTION */}
+      <section className="w-full lg:w-2/3 relative bg-[#f8f9fa] border-r border-slate-100">
+        <div className="absolute inset-0">
+          <ThreeCanvas 
+            color={config.color.hex} 
+            logoUrl={config.artwork?.previewUrl} 
+            placement={config.placement}
+          />
+        </div>
+
+        {/* Brand Overlay */}
+        <div className="absolute top-10 left-10 pointer-events-none">
+          <h2 className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400">CustomiseMe UK Studio</h2>
+          <div className="h-[2px] w-12 bg-blue-600 mt-2" />
+        </div>
+
+        {/* Dynamic Pricing Badge */}
+        <AnimatePresence shadow>
+          {totalQty > 0 && (
+            <motion.div 
+              initial={{ x: -20, opacity: 0 }} animate={{ x: 0, opacity: 1 }}
+              className="absolute bottom-10 left-10 bg-slate-900 text-white p-6 rounded-3xl shadow-2xl"
+            >
+              <p className="text-[10px] font-black uppercase tracking-widest text-blue-400 mb-1">Live Estimate</p>
+              <div className="flex items-baseline gap-2">
+                <span className="text-3xl font-black italic tracking-tighter">{formatCurrency(unitPrice * totalQty)}</span>
+                {totalQty >= 12 && <span className="text-xs text-green-400 font-bold">Bulk Applied</span>}
               </div>
-            </div>
+            </motion.div>
           )}
+        </AnimatePresence>
+      </section>
 
-          {/* Configuration Summary Badge */}
-          <div className="absolute bottom-6 left-6 bg-white/80 backdrop-blur px-4 py-2 rounded-full border text-xs font-bold tracking-widest uppercase">
-            Live Preview: {selectedColor.name} | {placement}
-          </div>
-        </section>
+      {/* CONFIGURATION SIDEBAR */}
+      <section className="w-full lg:w-1/3 overflow-y-auto px-8 py-12 lg:px-12 scrollbar-hide">
+        <header className="mb-12">
+          <span className="text-blue-600 font-bold uppercase text-[10px] tracking-widest">{initialProduct.category}</span>
+          <h1 className="text-5xl font-black italic uppercase tracking-tighter leading-none mt-2">{initialProduct.name}</h1>
+          <p className="mt-4 text-slate-500 leading-relaxed text-sm">{initialProduct.description}</p>
+        </header>
 
-        {/* RIGHT: Configuration Sidebar */}
-        <section className="w-full lg:w-2/5 p-8 lg:p-12 overflow-y-auto">
-          <header className="mb-10">
-            <h1 className="text-4xl font-black uppercase tracking-tighter mb-2">{product.name}</h1>
-            <p className="text-2xl text-blue-600 font-light">
-              {new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(product.price)}
-            </p>
-          </header>
-
-          <div className="space-y-12">
-            
-            {/* 1. Color Picker */}
-            <div className="space-y-4">
-              <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest">1. Fabric Color</h3>
-              <div className="flex flex-wrap gap-4">
-                {COLOR_OPTIONS.map(c => (
-                  <button
-                    key={c.name}
-                    onClick={() => setSelectedColor(c)}
-                    className={`w-12 h-12 rounded-full border-2 transition-all transform hover:scale-110 ${selectedColor.name === c.name ? 'border-blue-600 ring-4 ring-blue-100' : 'border-transparent'}`}
-                    style={{ backgroundColor: c.hex }}
-                    title={c.name}
-                  />
-                ))}
-              </div>
+        <div className="space-y-12">
+          {/* STEP 1: COLOR */}
+          <div className="space-y-4">
+            <h4 className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Phase 01: Garment Color</h4>
+            <div className="flex flex-wrap gap-3">
+              {['#000000', '#FFFFFF', '#2563eb', '#dc2626'].map(hex => (
+                <button
+                  key={hex}
+                  onClick={() => setConfig(prev => ({ ...prev, color: { hex } }))}
+                  className={`w-12 h-12 rounded-2xl transition-all duration-300 ${config.color.hex === hex ? 'ring-4 ring-blue-100 scale-110 shadow-lg' : 'opacity-80'}`}
+                  style={{ backgroundColor: hex }}
+                />
+              ))}
             </div>
+          </div>
 
-            {/* 2. Custom Artwork Upload */}
-            <div className="space-y-4">
-              <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest">2. Your Design</h3>
-              <div className="flex items-center gap-4">
-                <label className="flex-1 border-2 border-dashed border-slate-200 rounded-xl p-6 text-center cursor-pointer hover:bg-slate-50 transition-colors">
-                  <input type="file" className="hidden" onChange={handleFileUpload} accept="image/*" />
-                  <span className="text-sm font-bold text-slate-600">
-                    {uploadedArtworkSrc ? 'Change Artwork' : 'Upload PNG/JPG'}
-                  </span>
-                </label>
-                {uploadedArtworkSrc && (
-                  <button onClick={() => setUploadedArtworkSrc('')} className="text-red-500 text-xs font-bold">Remove</button>
+          {/* STEP 2: ARTWORK */}
+          <div className="space-y-4">
+            <h4 className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Phase 02: Brand Identity</h4>
+            <div className="relative group">
+              <input type="file" onChange={handleFileUpload} className="absolute inset-0 opacity-0 cursor-pointer z-10" />
+              <div className="border-2 border-dashed border-slate-200 rounded-3xl p-8 text-center transition-all group-hover:border-blue-500 group-hover:bg-blue-50/50">
+                {config.artwork ? (
+                  <div className="flex items-center justify-center gap-4">
+                    <img src={config.artwork.previewUrl} className="w-12 h-12 object-contain rounded-lg" />
+                    <span className="text-xs font-black uppercase tracking-widest">Artwork Loaded</span>
+                  </div>
+                ) : (
+                  <span className="text-xs font-black uppercase tracking-widest text-slate-400 group-hover:text-blue-600">Drop Logo File</span>
                 )}
               </div>
             </div>
-
-            {/* 3. Placement Selection */}
-            {uploadedArtworkSrc && (
-              <div className="space-y-4 animate-in fade-in slide-in-from-top-2">
-                <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest">3. Logo Placement</h3>
-                <div className="grid grid-cols-3 gap-2">
-                  {PLACEMENTS.map(pos => (
-                    <button
-                      key={pos}
-                      onClick={() => setPlacement(pos)}
-                      className={`py-2 px-3 border rounded-lg text-[10px] font-bold uppercase transition-all ${placement === pos ? 'bg-slate-900 text-white border-slate-900' : 'bg-white text-slate-500 hover:border-slate-400'}`}
-                    >
-                      {pos}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* 4. Multi-Size Quantity Grid */}
-            <div className="space-y-4">
-              <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest">4. Quantities</h3>
-              <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
-                {Object.keys(sizeQuantities).map(size => (
-                  <div key={size} className="text-center">
-                    <div className="text-[10px] font-black mb-1">{size}</div>
-                    <input
-                      type="number"
-                      value={sizeQuantities[size]}
-                      onChange={(e) => handleQuantityChange(size, e.target.value)}
-                      className="w-full border rounded-md p-2 text-center text-sm font-bold focus:ring-2 focus:ring-blue-500 outline-none"
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
           </div>
 
-          {/* Checkout Footer */}
-          <footer className="mt-16 pt-8 border-t border-slate-100">
-            <div className="flex items-end justify-between mb-6">
-              <div>
-                <p className="text-xs font-bold text-slate-400 uppercase">Total Items: {totalQuantity}</p>
-                <p className="text-3xl font-black text-slate-900">
-                  {new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(subtotal)}
-                </p>
-              </div>
-              <button 
-                onClick={toggleWishlist}
-                className="text-slate-400 hover:text-red-500 transition-colors"
-              >
-                {WishlistManager.isInWishlist(product.id) ? '❤️' : '♡'}
-              </button>
+          {/* STEP 3: QUANTITIES */}
+          <div className="space-y-4 pb-24">
+            <h4 className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Phase 03: Inventory Selection</h4>
+            <div className="grid grid-cols-4 gap-2">
+              {SIZES.map(size => (
+                <div key={size} className="space-y-2">
+                  <div className="text-[10px] font-black text-center">{size}</div>
+                  <input 
+                    type="number" 
+                    value={config.quantities[size]} 
+                    onChange={(e) => handleQtyChange(size, e.target.value)}
+                    className="w-full bg-slate-50 border-none rounded-xl p-3 text-center text-sm font-black focus:ring-2 focus:ring-blue-600"
+                  />
+                </div>
+              ))}
             </div>
-
-            <button
-              onClick={onAddToCart}
-              disabled={totalQuantity === 0}
-              className={`w-full py-5 rounded-2xl font-black tracking-widest uppercase transition-all ${totalQuantity > 0 ? 'bg-blue-600 text-white shadow-xl shadow-blue-200 hover:bg-blue-700 hover:-translate-y-1' : 'bg-slate-100 text-slate-400 cursor-not-allowed'}`}
-            >
-              Add to Bag
-            </button>
-          </footer>
-        </section>
-      </div>
-
-      {/* Toast Notification */}
-      {toast && (
-        <div className={`fixed bottom-8 right-8 px-8 py-4 rounded-2xl text-white font-bold shadow-2xl animate-in slide-in-from-bottom-5 duration-300 z-50 ${toast.type === 'success' ? 'bg-emerald-500' : 'bg-slate-900'}`}>
-          {toast.message}
+          </div>
         </div>
-      )}
+
+        {/* PERSISTENT ACTION FOOTER */}
+        <div className="fixed bottom-0 right-0 w-full lg:w-1/3 bg-white/90 backdrop-blur-md p-8 border-t border-slate-100 flex items-center justify-between">
+          <div>
+            <p className="text-[10px] font-black text-slate-400 uppercase leading-none mb-1">Unit Price</p>
+            <p className="text-xl font-black italic">{formatCurrency(unitPrice)}</p>
+          </div>
+          <button 
+            disabled={totalQty === 0}
+            onClick={() => addToCart(initialProduct, config)}
+            className="bg-blue-600 text-white px-10 py-4 rounded-2xl font-black uppercase tracking-[0.2em] text-[10px] hover:bg-blue-700 disabled:bg-slate-100 disabled:text-slate-300 transition-all shadow-xl shadow-blue-100"
+          >
+            Confirm Order
+          </button>
+        </div>
+      </section>
     </div>
   );
 }
