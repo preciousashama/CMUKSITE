@@ -1,83 +1,148 @@
-import { useState, useEffect, useRef } from 'react';
-import products from '../data/products';  // import your products list
-import { useRouter } from 'next/router';
+'use client';
+
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { useRouter } from 'next/navigation'; // Updated for Next.js 13+
+import Image from 'next/image';
+import products from '../data/products';
+import { useDebounce } from '../hooks/useDebounce'; // Custom hook recommended
 
 export default function SearchBar() {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
+  const [totalCount, setTotalCount] = useState(0);
   const [activeIndex, setActiveIndex] = useState(-1);
+  const [isOpen, setIsOpen] = useState(false);
+  
   const router = useRouter();
-  const resultsRef = useRef(null);
+  const searchRef = useRef(null);
+  const debouncedQuery = useDebounce(query, 300); // 300ms delay
 
+  // Handle Search Logic
   useEffect(() => {
-    if (!query.trim()) {
+    if (!debouncedQuery.trim()) {
       setResults([]);
+      setTotalCount(0);
       return;
     }
-    const term = query.toLowerCase();
-    const filtered = products.filter(p =>
+
+    const term = debouncedQuery.toLowerCase();
+    const allMatches = products.filter(p =>
       p.name.toLowerCase().includes(term) ||
-      (p.category && p.category.toString().toLowerCase().includes(term)) ||
-      (p.description && p.description.toLowerCase().includes(term)) ||
-      (p.size && p.size.toLowerCase().includes(term)) ||
-      (p.colors && p.colors.some(c => c.toLowerCase().includes(term)))
+      p.category?.toLowerCase().includes(term) ||
+      p.description?.toLowerCase().includes(term)
     );
-    setResults(filtered.slice(0, 8));
-    setActiveIndex(-1);
-  }, [query]);
 
-  const select = (prod) => {
-    router.push(`/product/${prod.id}`);
-  };
+    setTotalCount(allMatches.length);
+    setResults(allMatches.slice(0, 6)); // Show fewer for cleaner UI
+    setIsOpen(true);
+  }, [debouncedQuery]);
 
-  const handleKey = (e) => {
-    if (e.key === 'ArrowDown') {
-      setActiveIndex(i => Math.min(i + 1, results.length - 1));
-    } else if (e.key === 'ArrowUp') {
-      setActiveIndex(i => Math.max(i - 1, 0));
-    } else if (e.key === 'Enter' && activeIndex >= 0) {
-      select(results[activeIndex]);
-    } else if (e.key === 'Escape') {
-      setResults([]);
+  // Click Outside to Close
+  useEffect(() => {
+    const handleClick = (e) => {
+      if (searchRef.current && !searchRef.current.contains(e.target)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, []);
+
+  const handleSelect = useCallback((product) => {
+    setIsOpen(false);
+    setQuery('');
+    router.push(`/product/${product.id}`);
+  }, [router]);
+
+  const handleKeyDown = (e) => {
+    switch (e.key) {
+      case 'ArrowDown':
+        e.preventDefault();
+        setActiveIndex(prev => (prev < results.length - 1 ? prev + 1 : prev));
+        break;
+      case 'ArrowUp':
+        e.preventDefault();
+        setActiveIndex(prev => (prev > 0 ? prev - 1 : prev));
+        break;
+      case 'Enter':
+        e.preventDefault();
+        if (activeIndex >= 0) handleSelect(results[activeIndex]);
+        else if (results.length > 0) handleSelect(results[0]);
+        break;
+      case 'Escape':
+        setIsOpen(false);
+        break;
+      default:
+        break;
     }
   };
 
   return (
-    <div>
-      <form onSubmit={e => { e.preventDefault(); if (results[0]) select(results[0]); }}>
+    <div className="relative w-full max-w-lg" ref={searchRef}>
+      <form 
+        role="search"
+        onSubmit={e => e.preventDefault()}
+        className="relative"
+      >
         <input
           id="search-input"
-          type="text"
+          type="search"
+          aria-autocomplete="list"
+          aria-controls="search-results"
+          aria-expanded={isOpen}
+          aria-haspopup="listbox"
+          aria-activedescendant={activeIndex >= 0 ? `result-item-${activeIndex}` : undefined}
+          className="w-full bg-slate-100 border-2 border-transparent focus:border-blue-600 focus:bg-white rounded-2xl py-3 px-5 text-sm outline-none transition-all font-medium"
+          placeholder="Search apparel, designs..."
           value={query}
-          placeholder="Search..."
           onChange={e => setQuery(e.target.value)}
-          onKeyDown={handleKey}
+          onKeyDown={handleKeyDown}
+          onFocus={() => query && setIsOpen(true)}
           autoComplete="off"
         />
       </form>
 
-      {results.length > 0 && (
-        <div id="search-results" ref={resultsRef}>
+      {isOpen && results.length > 0 && (
+        <div 
+          id="search-results"
+          role="listbox"
+          className="absolute top-full left-0 w-full mt-2 bg-white rounded-2xl shadow-2xl border border-slate-100 overflow-hidden z-[100] animate-in fade-in slide-in-from-top-2"
+        >
           {results.map((prod, idx) => (
             <div
               key={prod.id}
-              style={{ background: idx === activeIndex ? '#eef' : undefined }}
-              onClick={() => select(prod)}
+              id={`result-item-${idx}`}
+              role="option"
+              aria-selected={idx === activeIndex}
+              className={`flex items-center gap-4 p-4 cursor-pointer transition-colors ${
+                idx === activeIndex ? 'bg-blue-50' : 'hover:bg-slate-50'
+              }`}
+              onClick={() => handleSelect(prod)}
+              onMouseEnter={() => setActiveIndex(idx)}
             >
-              <img
-                src={prod.image || '/placeholder.png'}
-                alt={prod.name}
-                width={40}
-                onError={(e) => (e.target.src = '/placeholder.png')}
-              />
-              <span>{prod.name}</span>
-              <span>£{prod.price.toFixed(2)}</span>
+              <div className="relative w-12 h-12 rounded-lg overflow-hidden flex-shrink-0 bg-slate-100">
+                <Image
+                  src={prod.image || '/placeholder.png'}
+                  alt=""
+                  fill
+                  className="object-cover"
+                />
+              </div>
+              <div className="flex-grow">
+                <p className="text-sm font-bold text-slate-900">{prod.name}</p>
+                <p className="text-xs text-slate-400 uppercase tracking-tighter">{prod.category}</p>
+              </div>
+              <span className="text-sm font-black text-blue-600">£{prod.price.toFixed(2)}</span>
             </div>
           ))}
-          {results.length >= 8 && (
-            <div onClick={() => router.push(`/search?q=${encodeURIComponent(query)}`)}>
-              See all {results.length} results
-            </div>
+
+          {totalCount > 6 && (
+            <button
+              onClick={() => router.push(`/search?q=${encodeURIComponent(query)}`)}
+              className="w-full p-4 bg-slate-50 text-center text-xs font-bold uppercase tracking-widest text-slate-500 hover:text-blue-600 transition-colors border-t border-slate-100"
+            >
+              See all {totalCount} results
+            </button>
           )}
         </div>
       )}
