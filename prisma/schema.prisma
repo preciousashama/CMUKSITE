@@ -1,25 +1,107 @@
-// This is your Prisma schema file,
+// generator and datasource remain the same as your input
 
-generator client {
-  provider = "prisma-client-js"
-}
-
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-}
 model User {
-  id               String   @id @default(uuid())
-  name             String
-  email            String   @unique
+  id               String    @id @default(uuid())
+  firstName        String?   
+  lastName         String?
+  name             String?   // Kept for NextAuth compatibility
+  email            String    @unique
   password         String
-  createdAt        DateTime @default(now())
-
-  // ✅ Add these for email verification
+  role             Role      @default(CUSTOMER)
+  
+  // Verification
   verificationCode String?
   codeExpires      DateTime?
-  emailVerified    Boolean  @default(false)
+  emailVerified    Boolean   @default(false)
+  
+  // Relations
+  orders           Order[]
+  designs          SavedDesign[]
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
 
-  @@map(users)
+  @@map("users")
 }
 
+model Product {
+  id          String    @id @default(uuid())
+  sku         String    @unique
+  name        String
+  slug        String    @unique
+  description String    @db.Text
+  basePrice   Float
+  image       String    // Primary thumbnail
+  category    String
+  inStock     Boolean   @default(true)
+  
+  // Relations
+  variants    ProductVariant[]
+  orderItems  OrderItem[]
+  createdAt   DateTime  @default(now())
+}
+
+model ProductVariant {
+  id        String   @id @default(uuid())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+  color     String
+  size      String
+  stock     Int      @default(0)
+  image     String?  // Color-specific image
+}
+
+model Order {
+  id              String      @id @default(uuid())
+  orderNumber     Int         @unique @default(autoincrement())
+  userId          String
+  user            User        @relation(fields: [userId], references: [id])
+  status          OrderStatus @default(PENDING)
+  totalAmount     Float
+  stripeLinkId    String?     @unique // For tracking payments
+  
+  // Shipping
+  shippingAddress String
+  city            String
+  postcode        String
+  phone           String
+
+  items           OrderItem[]
+  createdAt       DateTime    @default(now())
+}
+
+model OrderItem {
+  id           String  @id @default(uuid())
+  orderId      String
+  order        Order   @relation(fields: [orderId], references: [id])
+  productId    String
+  product      Product @relation(fields: [productId], references: [id])
+  quantity     Int
+  priceAtSale  Float   // Important: Capture price at time of purchase
+  
+  // For Customisation
+  customJson   Json?   // Stores the 3D studio coordinates/text/images
+}
+
+model SavedDesign {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  designData Json
+  previewUrl String?
+  createdAt  DateTime @default(now())
+}
+
+enum Role {
+  CUSTOMER
+  ADMIN
+  STAFF
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
