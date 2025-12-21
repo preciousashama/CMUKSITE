@@ -1,13 +1,8 @@
 'use client';
 import { useState, useMemo, useEffect, useCallback } from 'react';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
+import { motion, AnimatePresence } from 'framer-motion';
 import { products } from '../data/products';
-
-/**
- * Expert Product Listing Page
- * Features: URL-synced state, Multi-threaded filtering, Search, 
- * Mobile-responsive sidebar, and Notification system.
- */
 
 export default function ProductsPage() {
   const router = useRouter();
@@ -15,302 +10,240 @@ export default function ProductsPage() {
   const searchParams = useSearchParams();
 
   // --- STATE ---
-  const [productList] = useState(products || []);
   const [searchQuery, setSearchQuery] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
   const [wishlist, setWishlist] = useState(new Set());
   const [toasts, setToasts] = useState([]);
 
-  // --- URL STATE SYNC ---
-  // We derive these directly from the URL to allow deep-linking
-  const selectedCategories = searchParams.get('cat')?.split(',') || [];
-  const selectedSizes = searchParams.get('size')?.split(',') || [];
-  const selectedColors = searchParams.get('color')?.split(',') || [];
-  const sortBy = searchParams.get('sort') || '';
-  const itemsPerPage = Number(searchParams.get('limit')) || 12;
-  const currentPage = Number(searchParams.get('page')) || 1;
+  // 1. Search Debounce Logic
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedSearch(searchQuery), 300);
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
 
-  // Generic URL Update Handler
+  // 2. URL State Derivation
+  const selectedCategories = useMemo(() => searchParams.get('cat')?.split(',') || [], [searchParams]);
+  const selectedSizes = useMemo(() => searchParams.get('size')?.split(',') || [], [searchParams]);
+  const selectedColors = useMemo(() => searchParams.get('color')?.split(',') || [], [searchParams]);
+  const sortBy = searchParams.get('sort') || '';
+  const currentPage = Number(searchParams.get('page')) || 1;
+  const itemsPerPage = 12;
+
   const updateUrl = useCallback((updates) => {
     const params = new URLSearchParams(searchParams.toString());
     Object.entries(updates).forEach(([key, value]) => {
-      if (value === null || value === '' || (Array.isArray(value) && value.length === 0)) {
+      if (!value || (Array.isArray(value) && value.length === 0)) {
         params.delete(key);
       } else {
         params.set(key, Array.isArray(value) ? value.join(',') : value);
       }
     });
-    // Always reset to page 1 when changing filters
     if (!updates.page) params.set('page', '1');
     router.push(`${pathname}?${params.toString()}`, { scroll: false });
   }, [searchParams, pathname, router]);
 
-  // --- FILTER LOGIC ---
+  // 3. Expert Filter Logic
   const filteredProducts = useMemo(() => {
-    let result = [...productList];
+    let result = [...products];
 
-    // 1. Search Query
-    if (searchQuery) {
-      const q = searchQuery.toLowerCase();
-      result = result.filter(p => p.name.toLowerCase().includes(q));
+    if (debouncedSearch) {
+      const q = debouncedSearch.toLowerCase();
+      result = result.filter(p => p.name.toLowerCase().includes(q) || p.category.toLowerCase().includes(q));
     }
 
-    // 2. Category Filter
     if (selectedCategories.length) {
-      result = result.filter(p => {
-        const pCats = Array.isArray(p.category) ? p.category : [p.category];
-        return pCats.some(c => selectedCategories.includes(c));
-      });
+      result = result.filter(p => selectedCategories.includes(p.category));
     }
 
-    // 3. Size Filter
     if (selectedSizes.length) {
-      result = result.filter(p => {
-        const pSizes = Array.isArray(p.size) ? p.size : [p.size];
-        return pSizes.some(s => selectedSizes.includes(s));
-      });
+      result = result.filter(p => p.size?.some(s => selectedSizes.includes(s)));
     }
 
-    // 4. Color Filter
-    if (selectedColors.length) {
-      result = result.filter(p => {
-        const pCols = p.colors || (p.color ? [p.color] : []);
-        return pCols.some(c => selectedColors.includes(c));
-      });
-    }
-
-    // 5. Sorting
     const sortMethods = {
       'price-low': (a, b) => a.price - b.price,
       'price-high': (a, b) => b.price - a.price,
       'name': (a, b) => a.name.localeCompare(b.name),
-      'newest': (a, b) => b.id - a.id // Assuming higher ID is newer
     };
     if (sortMethods[sortBy]) result.sort(sortMethods[sortBy]);
 
     return result;
-  }, [productList, searchQuery, selectedCategories, selectedSizes, selectedColors, sortBy]);
+  }, [debouncedSearch, selectedCategories, selectedSizes, sortBy]);
 
-  // --- PAGINATION ---
-  const paginated = useMemo(() => {
-    const start = (currentPage - 1) * itemsPerPage;
-    return filteredProducts.slice(start, start + itemsPerPage);
-  }, [filteredProducts, currentPage, itemsPerPage]);
-
+  const paginated = filteredProducts.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
   const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
-
-  // --- HANDLERS ---
-  const toggleFilter = (key, currentValues, value) => {
-    const next = currentValues.includes(value)
-      ? currentValues.filter(v => v !== value)
-      : [...currentValues, value];
-    updateUrl({ [key]: next });
-  };
-
-  const showNotification = (message) => {
-    const id = Date.now();
-    setToasts(prev => [...prev, { id, message }]);
-    setTimeout(() => setToasts(prev => prev.filter(t => t.id !== id)), 3000);
-  };
 
   const handleWishlist = (id) => {
     setWishlist(prev => {
       const next = new Set(prev);
-      const isRemoving = next.has(id);
-      isRemoving ? next.delete(id) : next.add(id);
-      showNotification(isRemoving ? "Removed from wishlist" : "Added to wishlist");
+      const removing = next.has(id);
+      removing ? next.delete(id) : next.add(id);
+      
+      const idToast = Date.now();
+      setToasts(t => [...t, { id: idToast, message: removing ? "Removed from Wishlist" : "Added to Wishlist" }]);
+      setTimeout(() => setToasts(t => t.filter(x => x.id !== idToast)), 3000);
+      
       return next;
     });
   };
 
-  // --- DERIVED METADATA ---
-  const filterOptions = useMemo(() => {
-    const getOptions = (key, arrayKey) => {
-      const set = new Set();
-      productList.forEach(p => {
-        const vals = Array.isArray(p[arrayKey || key]) ? p[arrayKey || key] : [p[arrayKey || key]];
-        vals.forEach(v => v && set.add(v));
-      });
-      return [...set].sort();
-    };
-    return {
-      categories: getOptions('category'),
-      sizes: getOptions('size'),
-      colors: getOptions('colors', 'colors') // Handling your 'colors' vs 'color' data
-    };
-  }, [productList]);
-
   return (
-    <div className="max-w-7xl mx-auto px-6 py-10 font-sans text-slate-800">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
-        <div>
-          <h1 className="text-4xl font-black mb-2 tracking-tight">Collection</h1>
-          <p className="text-slate-500">{filteredProducts.length} items found</p>
+    <div className="max-w-7xl mx-auto px-6 py-10">
+      {/* Header with Glassmorphism Search */}
+      <div className="flex flex-col md:flex-row justify-between items-end gap-6 mb-12">
+        <div className="space-y-1">
+          <h1 className="text-5xl font-black italic tracking-tighter uppercase leading-none">The Collection</h1>
+          <p className="text-slate-400 font-medium uppercase text-[10px] tracking-widest">Showing {filteredProducts.length} Results</p>
         </div>
         
-        <div className="flex flex-wrap items-center gap-4">
-          <input 
-            type="text" 
-            placeholder="Search products..."
-            className="px-4 py-2 border rounded-full bg-white shadow-sm focus:ring-2 focus:ring-blue-500 outline-none w-full md:w-64"
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
+        <div className="flex flex-wrap gap-4 w-full md:w-auto">
+          <div className="relative flex-grow md:w-80">
+            <input 
+              type="text" 
+              placeholder="Search apparel..."
+              className="w-full bg-slate-50 border-none rounded-2xl px-6 py-4 text-sm font-bold focus:ring-2 focus:ring-blue-600 transition-all outline-none"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
           <select 
-            value={sortBy} 
+            className="bg-slate-900 text-white rounded-2xl px-6 py-4 text-[10px] font-black uppercase tracking-widest outline-none cursor-pointer hover:bg-blue-600 transition-colors"
+            value={sortBy}
             onChange={(e) => updateUrl({ sort: e.target.value })}
-            className="p-2 border rounded-lg bg-white outline-none cursor-pointer"
           >
-            <option value="">Sort By: Default</option>
-            <option value="price-low">Price: Low to High</option>
-            <option value="price-high">Price: High to Low</option>
-            <option value="name">Alphabetical</option>
+            <option value="">Sort: Newest</option>
+            <option value="price-low">Price: Low</option>
+            <option value="price-high">Price: High</option>
           </select>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-10">
-        {/* Sidebar Filters */}
-        <aside className="lg:col-span-1 space-y-8">
-          <div className="flex items-center justify-between">
-            <h2 className="text-xl font-bold">Filters</h2>
-            <button 
-              onClick={() => router.push(pathname)}
-              className="text-xs text-blue-600 hover:underline"
-            >
-              Clear All
-            </button>
-          </div>
-
-          <FilterGroup 
-            title="Categories" 
-            options={filterOptions.categories} 
-            selected={selectedCategories} 
-            onToggle={(val) => toggleFilter('cat', selectedCategories, val)} 
-          />
-
-          <FilterGroup 
-            title="Sizes" 
-            options={filterOptions.sizes} 
-            selected={selectedSizes} 
-            onToggle={(val) => toggleFilter('size', selectedSizes, val)} 
-          />
-
-          <FilterGroup 
-            title="Colors" 
-            options={filterOptions.colors} 
-            selected={selectedColors} 
-            onToggle={(val) => toggleFilter('color', selectedColors, val)} 
-          />
+      <div className="flex flex-col lg:flex-row gap-12">
+        {/* Modern Filter Sidebar */}
+        <aside className="w-full lg:w-64 shrink-0 space-y-10">
+           <FilterSection 
+             title="Style" 
+             options={['T-Shirts', 'Hoodies', 'Sweatshirts']} 
+             selected={selectedCategories} 
+             onToggle={(v) => {
+               const next = selectedCategories.includes(v) ? selectedCategories.filter(x => x !== v) : [...selectedCategories, v];
+               updateUrl({ cat: next });
+             }}
+           />
+           <FilterSection 
+             title="Sizes" 
+             options={['S', 'M', 'L', 'XL', 'XXL']} 
+             selected={selectedSizes} 
+             onToggle={(v) => {
+                const next = selectedSizes.includes(v) ? selectedSizes.filter(x => x !== v) : [...selectedSizes, v];
+                updateUrl({ size: next });
+             }}
+           />
         </aside>
 
-        {/* Product Grid */}
-        <main className="lg:col-span-3">
-          {paginated.length === 0 ? (
-            <div className="text-center py-20 bg-slate-50 rounded-2xl border-2 border-dashed">
-              <p className="text-xl text-slate-400">No products match your criteria.</p>
-              <button onClick={() => router.push(pathname)} className="mt-4 text-blue-600 font-bold">Reset Filters</button>
-            </div>
-          ) : (
-            <>
-              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8">
-                {paginated.map((product) => (
-                  <ProductCard 
-                    key={product.id} 
-                    product={product} 
-                    isWishlisted={wishlist.has(product.id)}
-                    onWishlist={() => handleWishlist(product.id)}
-                    onView={() => router.push(`/productdetail?id=${product.id}`)}
-                  />
-                ))}
-              </div>
+        {/* Product Grid with AnimatePresence */}
+        <main className="flex-grow">
+          <motion.div 
+            layout
+            className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-x-8 gap-y-12"
+          >
+            <AnimatePresence mode="popLayout">
+              {paginated.map((product, idx) => (
+                <ProductCard 
+                  key={product.id} 
+                  product={product} 
+                  index={idx}
+                  isLiked={wishlist.has(product.id)}
+                  onWishlist={() => handleWishlist(product.id)}
+                />
+              ))}
+            </AnimatePresence>
+          </motion.div>
 
-              {/* Pagination */}
-              {totalPages > 1 && (
-                <div className="mt-12 flex justify-center items-center gap-2">
-                  {Array.from({ length: totalPages }, (_, i) => (
-                    <button
-                      key={i + 1}
-                      onClick={() => updateUrl({ page: i + 1 })}
-                      className={`w-10 h-10 rounded-lg font-bold transition-all 
-                        ${currentPage === i + 1 
-                          ? 'bg-slate-900 text-white' 
-                          : 'bg-white text-slate-600 hover:bg-slate-100 border'}`}
-                    >
-                      {i + 1}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </>
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="mt-20 flex justify-center gap-2">
+              {[...Array(totalPages)].map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => updateUrl({ page: i + 1 })}
+                  className={`w-12 h-12 rounded-2xl font-black text-xs transition-all ${currentPage === i + 1 ? 'bg-blue-600 text-white shadow-xl shadow-blue-200' : 'bg-slate-50 text-slate-400 hover:bg-slate-100'}`}
+                >
+                  {i + 1}
+                </button>
+              ))}
+            </div>
           )}
         </main>
       </div>
 
       {/* Toast Portal */}
-      <div className="fixed bottom-6 right-6 space-y-3 z-[100]">
-        {toasts.map(t => (
-          <div key={t.id} className="bg-slate-900 text-white px-6 py-3 rounded-xl shadow-2xl animate-in slide-in-from-right-full">
-            {t.message}
-          </div>
-        ))}
+      <div className="fixed bottom-8 right-8 flex flex-col gap-3 z-50">
+        <AnimatePresence>
+          {toasts.map(t => (
+            <motion.div 
+              key={t.id}
+              initial={{ opacity: 0, x: 50, scale: 0.9 }}
+              animate={{ opacity: 1, x: 0, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              className="bg-slate-900 text-white px-6 py-4 rounded-2xl shadow-2xl font-black uppercase text-[10px] tracking-widest flex items-center gap-3"
+            >
+              <span className="text-blue-400">●</span> {t.message}
+            </motion.div>
+          ))}
+        </AnimatePresence>
       </div>
     </div>
   );
 }
 
-// --- SUB-COMPONENTS ---
+// --- Sub Components ---
 
-function FilterGroup({ title, options, selected, onToggle }) {
-  if (options.length === 0) return null;
+function FilterSection({ title, options, selected, onToggle }) {
   return (
-    <div className="border-b pb-6">
-      <h3 className="font-semibold text-sm uppercase tracking-wider text-slate-400 mb-4">{title}</h3>
-      <div className="space-y-3">
+    <div className="space-y-4">
+      <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-300">{title}</h4>
+      <div className="flex flex-col gap-3">
         {options.map(opt => (
-          <label key={opt} className="flex items-center group cursor-pointer">
-            <input 
-              type="checkbox" 
-              className="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
-              checked={selected.includes(opt)}
-              onChange={() => onToggle(opt)}
-            />
-            <span className={`ml-3 text-sm transition-colors ${selected.includes(opt) ? 'text-slate-900 font-bold' : 'text-slate-500 group-hover:text-slate-700'}`}>
-              {opt}
-            </span>
-          </label>
+          <button
+            key={opt}
+            onClick={() => onToggle(opt)}
+            className={`flex items-center gap-3 text-sm font-bold transition-all ${selected.includes(opt) ? 'text-blue-600 translate-x-1' : 'text-slate-500 hover:text-slate-800'}`}
+          >
+            <div className={`w-2 h-2 rounded-full ${selected.includes(opt) ? 'bg-blue-600' : 'bg-slate-200'}`} />
+            {opt}
+          </button>
         ))}
       </div>
     </div>
   );
 }
 
-function ProductCard({ product, isWishlisted, onWishlist, onView }) {
+function ProductCard({ product, index, isLiked, onWishlist }) {
+  const router = useRouter();
   return (
-    <div className="group relative bg-white rounded-2xl overflow-hidden border transition-all hover:shadow-xl">
-      <div className="aspect-square bg-slate-100 overflow-hidden relative cursor-pointer" onClick={onView}>
-        <img 
-          src={product.image || 'https://placehold.co/400x400'} 
-          alt={product.name}
-          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-        />
+    <motion.div 
+      layout
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: index * 0.05 }}
+      className="group"
+    >
+      <div className="relative aspect-[4/5] bg-slate-50 rounded-[2.5rem] overflow-hidden mb-6 cursor-pointer" onClick={() => router.push(`/productdetail?id=${product.id}`)}>
+        <img src={product.image} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt={product.name} />
         <button 
           onClick={(e) => { e.stopPropagation(); onWishlist(); }}
-          className={`absolute top-4 right-4 p-2 rounded-full shadow-md transition-all 
-            ${isWishlisted ? 'bg-red-500 text-white' : 'bg-white text-slate-400 hover:text-red-500'}`}
+          className={`absolute top-6 right-6 w-12 h-12 rounded-2xl flex items-center justify-center backdrop-blur-md transition-all ${isLiked ? 'bg-red-500 text-white shadow-lg' : 'bg-white/80 text-slate-900 hover:bg-white'}`}
         >
-          {isWishlisted ? '❤️' : '♡'}
+          {isLiked ? '❤️' : '♡'}
         </button>
       </div>
-      
-      <div className="p-5">
-        <h3 className="font-bold text-lg mb-1 truncate">{product.name}</h3>
-        <p className="text-blue-600 font-black text-xl mb-4">£{product.price.toFixed(2)}</p>
-        <button 
-          className="w-full bg-slate-900 text-white py-3 rounded-xl font-bold hover:bg-slate-800 transition-colors"
-          onClick={(e) => { e.stopPropagation(); /* cart logic */ }}
-        >
-          Add to Cart
-        </button>
+      <div>
+        <div className="flex justify-between items-start mb-1">
+          <h3 className="font-black uppercase italic tracking-tighter text-xl text-slate-900">{product.name}</h3>
+          <span className="font-black text-blue-600 italic">£{product.price}</span>
+        </div>
+        <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">{product.category}</p>
       </div>
-    </div>
+    </motion.div>
   );
 }

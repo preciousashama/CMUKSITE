@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useRef, useMemo } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
+import React, { Suspense, useMemo } from 'react';
+import { Canvas } from '@react-three/fiber';
 import { 
   useGLTF, 
   OrbitControls, 
@@ -9,86 +9,118 @@ import {
   Environment, 
   Decal, 
   useTexture,
-  Float
+  Float,
+  Center
 } from '@react-three/drei';
 import * as THREE from 'three';
 
-function ShirtModel({ color, customLogo, decalPosition = [0, 0.04, 0.15], decalScale = 0.15 }) {
-  // 1. Efficient loading with caching
+// 1. Separate Model logic for cleaner Suspense handling
+function Shirt({ color, logoUrl, decalProps }) {
   const { nodes, materials } = useGLTF('/models/tshirt.glb');
-  
-  // 2. Load the custom logo texture if provided
-  const texture = customLogo ? useTexture(customLogo) : null;
+  const texture = logoUrl ? useTexture(logoUrl) : null;
 
-  // 3. Smoothly update color without cloning on every frame
+  // Improve texture quality
   useMemo(() => {
-    if (materials.lambert1) { // Replace 'lambert1' with your model's actual material name
-      materials.lambert1.color = new THREE.Color(color);
-      materials.lambert1.roughness = 0.7; // Make it look more like fabric
+    if (texture) {
+      texture.anisotropy = 16;
+      texture.encoding = THREE.sRGBEncoding;
+      texture.needsUpdate = true;
     }
+  }, [texture]);
+
+  // Clone material to prevent global state pollution
+  const shirtMaterial = useMemo(() => {
+    const mat = materials.lambert1.clone();
+    mat.color = new THREE.Color(color);
+    mat.roughness = 0.8; 
+    return mat;
   }, [color, materials]);
 
   return (
-    <group>
-      <mesh
-        castShadow
-        receiveShadow
-        geometry={nodes.T_Shirt.geometry} // Replace 'T_Shirt' with your node name
-        material={materials.lambert1}
-        dispose={null}
-      >
-        {/* 4. THE DECAL: This is how you put the design ON the shirt */}
-        {texture && (
-          <Decal
-            position={decalPosition} // [x, y, z]
-            rotation={[0, 0, 0]}
-            scale={decalScale}
-            map={texture}
-            // Ensure decal doesn't "bleed" through to the back
-            depthTest={true}
-            depthWrite={false}
-          />
-        )}
-      </mesh>
-    </group>
+    <mesh
+      castShadow
+      receiveShadow
+      geometry={nodes.T_Shirt.geometry}
+      material={shirtMaterial}
+    >
+      {texture && (
+        <Decal
+          position={decalProps.position}
+          rotation={decalProps.rotation}
+          scale={decalProps.scale}
+          map={texture}
+          // Use polygonOffset to prevent z-fighting (logo flickering)
+          polygonOffset
+          polygonOffsetFactor={-1}
+        />
+      )}
+    </mesh>
   );
 }
 
-export default function ThreeCanvas({ color = "#ffffff", logoUrl = null }) {
+// 2. Loading Placeholder for UX stability
+const SceneLoader = () => (
+  <mesh rotation={[0, 0, 0]}>
+    <boxGeometry args={[0.1, 0.1, 0.1]} />
+    <meshStandardMaterial color="#cbd5e1" wireframe />
+  </mesh>
+);
+
+export default function ThreeCanvas({ 
+  color = "#ffffff", 
+  logoUrl = null,
+  decalProps = { position: [0, 0.04, 0.15], rotation: [0, 0, 0], scale: 0.15 } 
+}) {
   return (
-    <div className="w-full h-[500px] bg-slate-50 rounded-3xl overflow-hidden cursor-grab active:cursor-grabbing border border-slate-200 shadow-inner">
+    <div className="relative w-full h-[600px] bg-white rounded-[3rem] overflow-hidden border border-slate-100 shadow-2xl">
       <Canvas
         shadows
-        camera={{ position: [0, 0, 0.5], fov: 25 }}
-        gl={{ preserveDrawingBuffer: true }} // Required for saving screenshots of designs
+        camera={{ position: [0, 0, 0.8], fov: 25 }}
+        gl={{ 
+          preserveDrawingBuffer: true,
+          antialias: true,
+          toneMapping: THREE.ACESFilmicToneMapping 
+        }}
       >
         <ambientLight intensity={0.5} />
+        <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} shadow-mapSize={[2048, 2048]} castShadow />
         
-        {/* Professional Environment Lighting */}
-        <Environment preset="city" />
-        
-        <Float speed={2} rotationIntensity={0.5} floatIntensity={0.5}>
-          <ShirtModel color={color} customLogo={logoUrl} />
-        </Float>
+        <Suspense fallback={<SceneLoader />}>
+          <Environment preset="city" />
+          <Center>
+            <Float speed={1.5} rotationIntensity={0.2} floatIntensity={0.3}>
+              <Shirt 
+                color={color} 
+                logoUrl={logoUrl} 
+                decalProps={decalProps} 
+              />
+            </Float>
+          </Center>
+        </Suspense>
 
         <ContactShadows 
-          position={[0, -0.15, 0]} 
-          opacity={0.4} 
-          scale={2.5} 
-          blur={2} 
-          far={1} 
+          position={[0, -0.2, 0]} 
+          opacity={0.25} 
+          scale={2} 
+          blur={1.5} 
+          far={0.8} 
         />
         
         <OrbitControls 
-          enableZoom={true} 
-          minPolarAngle={Math.PI / 2.5} 
-          maxPolarAngle={Math.PI / 2} 
+          makeDefault
+          enablePan={false}
+          minDistance={0.5}
+          maxDistance={1.2}
+          minPolarAngle={Math.PI / 3} 
+          maxPolarAngle={Math.PI / 1.8} 
         />
       </Canvas>
-      
-      {/* UI Overlay Hint */}
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-[10px] font-black uppercase tracking-widest text-slate-400 pointer-events-none">
-        ← Click & Drag to Rotate →
+
+      {/* Interactive Helper Overlay */}
+      <div className="absolute top-6 right-6 flex flex-col gap-2">
+         <div className="bg-white/90 backdrop-blur-sm px-4 py-2 rounded-full border border-slate-100 shadow-sm text-[10px] font-black uppercase tracking-widest text-slate-900">
+           3D Preview Mode
+         </div>
       </div>
     </div>
   );

@@ -1,24 +1,24 @@
 /* 1. Base Layout & Modern Variables */
 :root {
-  --primary-blue: #0070f3;
-  --bg-canvas: #f8fafc;
-  --border-light: #e2e8f0;
+  --primary-blue: #2563eb;
+  --bg-canvas: #fcfcfc;
+  --border-light: #f1f5f9;
   --text-dark: #0f172a;
-  --text-muted: #64748b;
-  --shadow-ui: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --text-muted: #94a3b8;
+  --accent-green: #22c55e;
+  --radius-button: 16px;
+  --shadow-premium: 0 20px 25px -5px rgb(0 0 0 / 0.05), 0 8px 10px -6px rgb(0 0 0 / 0.05);
 }
 
 .product-detail-page {
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: 'Inter', -apple-system, sans-serif;
   color: var(--text-dark);
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 0; /* Full bleed looks more professional */
+  background: white;
 }
 
 .product-main {
   display: grid;
-  grid-template-columns: 1fr 450px; /* Fixed width sidebar is standard for configurators */
+  grid-template-columns: 1fr 480px; /* Slightly wider sidebar for better input spacing */
   min-height: 100vh;
 }
 
@@ -28,120 +28,140 @@
   top: 0;
   height: 100vh;
   background: var(--bg-canvas);
+  background-image: radial-gradient(#e2e8f0 0.5px, transparent 0.5px); /* Subtle grid pattern */
+  background-size: 24px 24px;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
 }
 
-/* 3. Artwork Placement Logic */
-/* We wrap the artwork in a container that matches the "printable area" of the 3D model */
+/* 3. Artwork Placement Logic (Print Safety Zones) */
 .artwork-container {
   position: absolute;
-  top: 50%;
+  top: 45%; /* Adjusted for natural chest height on a shirt model */
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 40%; /* Represents the 'chest/front' area */
-  height: 40%;
+  width: 250px; 
+  height: 250px;
   pointer-events: none;
   display: flex;
-  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+  /* Visual guide for the user in the studio */
+  border: 1px dashed rgba(37, 99, 235, 0.2);
 }
 
 .uploaded-artwork {
   width: 100%;
-  height: auto;
+  height: 100%;
   object-fit: contain;
-  filter: drop-shadow(0 10px 15px rgba(0,0,0,0.1)); /* Makes logo look like it sits on fabric */
+  /* Multi-layered shadow to simulate 'printed' depth */
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.05)) drop-shadow(0 1px 2px rgba(0,0,0,0.1));
 }
 
-/* Placement Modifiers */
-.artwork-container.left { align-items: flex-start; justify-content: flex-start; transform: translate(-80%, -50%); }
-.artwork-container.right { align-items: flex-start; justify-content: flex-end; transform: translate(-20%, -50%); }
-.artwork-container.centre { align-items: center; justify-content: center; transform: translate(-50%, -50%); }
-.artwork-container.bottom-right { align-items: flex-end; justify-content: flex-end; transform: translate(-20%, -20%); }
-.artwork-container.bottom-left { align-items: flex-end; justify-content: flex-start; transform: translate(-80%, -20%); }
+/* Placement Modifiers - Using modern Clamp/Flex for alignment */
+.artwork-container.left { justify-content: flex-start; transform: translate(-140%, -50%) scale(0.6); }
+.artwork-container.right { justify-content: flex-end; transform: translate(40%, -50%) scale(0.6); }
+.artwork-container.centre { justify-content: center; transform: translate(-50%, -50%); }
 
 /* 4. Configuration Sidebar */
 .product-info {
   background: white;
-  padding: 40px;
+  padding: 60px 48px;
   border-left: 1px solid var(--border-light);
-  box-shadow: -10px 0 30px rgba(0,0,0,0.02);
   overflow-y: auto;
+  scrollbar-width: none; /* Hide scrollbar for clean UI */
 }
+
+.product-info::-webkit-scrollbar { display: none; }
 
 .product-info h1 {
-  font-size: 2.25rem;
+  font-size: 2.5rem;
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+  font-style: italic; /* Matches the 'CustomizeMe' brand vibe */
+  line-height: 1;
+  margin-bottom: 12px;
+}
+
+.category-tag {
+  font-size: 0.7rem;
   font-weight: 800;
-  letter-spacing: -0.025em;
-  margin-bottom: 0.5rem;
-}
-
-.price {
-  font-size: 1.5rem;
-  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
   color: var(--primary-blue);
-  margin-bottom: 2rem;
+  margin-bottom: 8px;
+  display: block;
 }
 
-/* 5. Modern Option Groups */
+/* 5. Option Groups & Color Selection */
 .option-group {
-  margin-bottom: 32px;
-  padding-bottom: 24px;
-  border-bottom: 1px solid #f1f5f9;
+  margin-top: 48px;
 }
 
 .side-label {
-  display: block;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   font-size: 0.75rem;
-  font-weight: 800;
+  font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: var(--text-muted);
-  margin-bottom: 16px;
+  margin-bottom: 20px;
 }
 
-/* Color Picker */
 .color-options {
   display: flex;
-  gap: 16px;
+  gap: 12px;
 }
 
 .color-circle {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px; /* Square with rounded corners looks more modern than circles */
   cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
-  border: 3px solid white;
-  box-shadow: 0 0 0 1px var(--border-light);
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+  padding: 2px;
+  background-clip: content-box;
 }
+
+.color-circle:hover { transform: scale(1.1); }
 
 .color-circle.selected {
-  transform: scale(1.15);
-  box-shadow: 0 0 0 2px var(--primary-blue);
+  border-color: var(--primary-blue);
+  transform: scale(1.1);
 }
 
-/* 6. Quantity Grid */
+/* 6. Quantity Grid (Inputs) */
 .sizes-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
 }
 
 .size-item {
   background: #f8fafc;
-  padding: 12px;
-  border-radius: 8px;
+  padding: 12px 8px;
+  border-radius: 12px;
   text-align: center;
-  border: 1px solid var(--border-light);
+  transition: all 0.2s ease;
+  border: 2px solid transparent;
+}
+
+.size-item:focus-within {
+  background: white;
+  border-color: var(--primary-blue);
+  box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.1);
 }
 
 .size-item label {
   display: block;
-  font-size: 0.7rem;
-  font-weight: 700;
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: var(--text-muted);
   margin-bottom: 4px;
 }
 
@@ -150,77 +170,54 @@
   background: transparent;
   border: none;
   text-align: center;
-  font-weight: 700;
-  font-size: 1.1rem;
-  color: var(--text-dark);
+  font-weight: 800;
+  font-size: 1.25rem;
+  outline: none;
 }
 
-/* 7. Interactive Buttons */
+/* 7. Action Footer (Sticky) */
 .action-buttons {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 12px;
+  position: sticky;
+  bottom: 0;
+  background: linear-gradient(to top, white 80%, transparent);
+  padding: 40px 0 0 0;
   margin-top: 40px;
 }
 
 .btn-primary {
+  width: 100%;
   background: var(--text-dark);
   color: white;
-  padding: 18px;
-  border-radius: 12px;
-  font-weight: 700;
+  padding: 20px;
+  border-radius: var(--radius-button);
+  font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  transition: all 0.2s;
+  letter-spacing: 0.1em;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: #1e293b;
-  transform: translateY(-2px);
-  box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+  background: var(--primary-blue);
+  transform: translateY(-4px);
+  box-shadow: 0 20px 25px -5px rgba(37, 99, 235, 0.2);
 }
 
-.btn-wishlist {
-  background: transparent;
-  border: 1px solid var(--border-light);
-  color: var(--text-dark);
-  padding: 12px;
-  border-radius: 12px;
-  font-weight: 600;
+.btn-primary:disabled {
+  background: #e2e8f0;
+  color: #94a3b8;
+  cursor: not-allowed;
 }
 
-/* 8. Toast UI */
-.toast {
-  position: fixed;
-  top: 24px;
-  right: 24px;
-  left: auto;
-  transform: none;
-  min-width: 300px;
-  background: var(--text-dark);
-  backdrop-filter: blur(10px);
-  padding: 16px 24px;
-  border-radius: 16px;
-  box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1);
-  animation: slideIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-@keyframes slideIn {
-  from { transform: translateX(100%); opacity: 0; }
-  to { transform: translateX(0); opacity: 1; }
-}
-
-/* 9. Mobile Responsiveness */
-@media (max-width: 1024px) {
-  .product-main {
-    grid-template-columns: 1fr;
-  }
-  .product-canvas {
-    height: 50vh;
-    position: relative;
-  }
-  .product-info {
-    border-left: none;
-    border-top: 1px solid var(--border-light);
-  }
+/* 8. Success Feedback */
+.bulk-badge {
+  display: inline-block;
+  background: #dcfce7;
+  color: #166534;
+  padding: 4px 12px;
+  border-radius: 99px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  margin-left: 10px;
 }
