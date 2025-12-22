@@ -1,107 +1,23 @@
-generator client {
-  provider = "prisma-client-api"
-}
-
 datasource db {
-  provider = "postgresql" // or "mysql" / "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id               String         @id @default(uuid())
-  firstName        String?
-  lastName         String?
-  name             String?        // NextAuth
-  email            String         @unique
-  password         String
-  role             Role           @default(CUSTOMER)
-  verificationCode String?
-  codeExpires      DateTime?
-  emailVerified    Boolean        @default(false)
-  orders           Order[]
-  designs          SavedDesign[]
-  createdAt        DateTime       @default(now())
-  updatedAt        DateTime       @updatedAt
-
-  @@map("users")
+generator client {
+  provider = "prisma-client-js"
 }
 
 model Product {
-  id          String           @id @default(uuid())
-  sku         String           @unique
+  id          String   @id @default(cuid())
   name        String
-  slug        String           @unique
-  description String           @db.Text
-  basePrice   Float
-  image       String           
+  description String
+  price       Decimal
   category    String
-  inStock     Boolean          @default(true)
-  variants    ProductVariant[]
-  orderItems  OrderItem[]
-  createdAt   DateTime         @default(now())
-}
-
-model ProductVariant {
-  id        String   @id @default(uuid())
-  productId String
-  product   Product  @relation(fields: [productId], references: [id])
-  color     String
-  size      String
-  stock     Int      @default(0)
-  image     String?  
-}
-
-model Order {
-  id              String       @id @default(uuid())
-  orderNumber     Int          @unique @default(autoincrement())
-  userId          String
-  user            User         @relation(fields: [userId], references: [id])
-  status          OrderStatus  @default(PENDING)
-  totalAmount     Float
-  stripeLinkId    String?      @unique 
-  shippingAddress String
-  city            String
-  postcode        String
-  phone           String
-  items           OrderItem[]
-  createdAt       DateTime     @default(now())
-}
-
-model OrderItem {
-  id          String   @id @default(uuid())
-  orderId     String
-  order       Order    @relation(fields: [orderId], references: [id])
-  productId   String
-  product     Product  @relation(fields: [productId], references: [id])
-  quantity    Int
-  priceAtSale Float
-  
-  // CUSTOMIZATION PAYLOAD
-  // Expected format: { logoUrl: string, hexColor: string, placement: string, sizeBreakdown: object }
-  customJson  Json?    
-}
-
-model SavedDesign {
-  id         String   @id @default(uuid())
-  name       String?  @default("My Custom Design")
-  userId     String
-  user       User     @relation(fields: [userId], references: [id])
-  designData Json     // Stores the state from the 3D Studio
-  previewUrl String?  // URL to a generated thumbnail
-  createdAt  DateTime @default(now())
-}
-
-enum Role {
-  CUSTOMER
-  ADMIN
-  STAFF
-}
-
-enum OrderStatus {
-  PENDING
-  PAID
-  PROCESSING
-  SHIPPED
-  DELIVERED
-  CANCELLED
+  images      String[]
+  sizes       String[]
+  colors      String[]
+  stock       Int
+  model3d     String?  // URL to GLB file
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
