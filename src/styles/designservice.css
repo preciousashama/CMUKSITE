@@ -147,3 +147,29 @@ body {
   border-radius: 0;
   padding: 60px;
 }
+
+.studio-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 350px; /* 3D View | Controls Sidebar */
+  height: calc(100vh - var(--header-height));
+  overflow: hidden;
+}
+
+.canvas-container {
+  position: relative;
+  cursor: grab;
+}
+
+.canvas-container:active {
+  cursor: grabbing;
+}
+
+.studio-overlay-text {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  pointer-events: none;
+  font-[9px] font-black uppercase tracking-[0.4em];
+  color: var(--cmuk-black);
+  z-index: 10;
+}
