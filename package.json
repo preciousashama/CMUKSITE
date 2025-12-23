@@ -11,11 +11,11 @@
   "dependencies": {
     "@react-three/drei": "^9.105.0",
     "@react-three/fiber": "^8.16.2",
-    "next": "14.2.3",
+    "lucide-react": "^0.378.0",
+    "next": "^14.2.35",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "three": "^0.164.1",
-    "lucide-react": "^0.378.0"
+    "three": "^0.164.1"
   },
   "devDependencies": {
     "@types/node": "^20.12.12",
@@ -23,7 +23,7 @@
     "@types/react-dom": "^18.3.0",
     "@types/three": "^0.164.0",
     "eslint": "^8.57.0",
-    "eslint-config-next": "14.2.3",
+    "eslint-config-next": "^16.1.1",
     "typescript": "^5.4.5"
   }
 }
