@@ -1,0 +1,151 @@
+/* =================== CMUK SYSTEM TOKENS =================== */
+:root {
+  --cmuk-black: #000000;
+  --cmuk-white: #ffffff;
+  --cmuk-grey-50: #fafafa;
+  --cmuk-grey-100: #f1f5f9;
+  --cmuk-grey-400: #94a3b8;
+  --cmuk-border: #eeeeee;
+  
+  /* Performance & Animation */
+  --ease-premium: cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-fast: 0.2s var(--ease-premium);
+  --transition-base: 0.5s var(--ease-premium);
+}
+
+/* =================== THE ARCHIVE RESET =================== */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  cursor: default; /* We will define pointer for interactive elements */
+}
+
+html {
+  scroll-behavior: smooth;
+  background-color: var(--cmuk-white);
+  /* Typography Scale */
+  font-size: 16px; 
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  line-height: 1.5;
+  color: var(--cmuk-black);
+  background-color: var(--cmuk-white);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  /* Premium touch: No bounce on scroll */
+  overscroll-behavior-y: none;
+}
+
+/* =================== GLOBAL TYPOGRAPHY (The Archive Voice) =================== */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: -0.04em;
+  line-height: 0.9;
+  margin-bottom: 1rem;
+}
+
+/* The "Italic Bold" Brand Look */
+.brand-heading {
+  font-style: italic;
+  letter-spacing: -0.06em;
+}
+
+p {
+  font-weight: 500;
+  font-size: 0.95rem;
+  color: #444;
+  max-width: 65ch; /* Optimized for readability */
+}
+
+a, button, input[type="checkbox"], select {
+  cursor: pointer; /* Explicitly set pointer for interactive only */
+}
+
+/* =================== UTILITY: FILTERS & SIDEBARS =================== */
+.filters-sidebar {
+  width: 280px;
+  background-color: var(--cmuk-white);
+  padding: 40px 20px;
+  border-right: 1px solid var(--cmuk-border);
+  height: 100vh;
+  position: sticky;
+  top: 0;
+}
+
+.filter-group {
+  margin-bottom: 40px;
+  border-bottom: none; /* Cleaner look */
+}
+
+.filter-header h3 {
+  font-[10px] font-black uppercase tracking-[0.4em] text-slate-400 mb-6;
+}
+
+.filter-option label {
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.filter-option input[type="checkbox"] {
+  width: 14px;
+  height: 14px;
+  border-radius: 0; /* Sharp checkbox */
+  accent-color: var(--cmuk-black);
+  margin-right: 12px;
+}
+
+/* =================== PAGINATION (Minimalist Metadata) =================== */
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 40px 0;
+  border-top: 1px solid var(--cmuk-border);
+}
+
+.page-item {
+  font-[10px] font-black uppercase tracking-widest;
+  color: var(--cmuk-black);
+  padding: 10px 20px;
+  border: 1px solid var(--cmuk-border);
+  transition: var(--transition-fast);
+}
+
+.page-item.active {
+  background-color: var(--cmuk-black);
+  color: var(--cmuk-white);
+  border-color: var(--cmuk-black);
+}
+
+.page-item:hover:not(.active) {
+  background-color: var(--cmuk-grey-50);
+}
+
+/* =================== LAYOUT CONTAINERS =================== */
+.container {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 40px;
+}
+
+/* Custom Scrollbar for the Archive */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--cmuk-white);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--cmuk-black);
+}

@@ -1,0 +1,140 @@
+/* =================== THE ARCHIVE SYSTEM HEADER =================== */
+
+:root {
+  --header-height: 80px;
+  --cmuk-black: #000000;
+  --cmuk-white: #ffffff;
+  --cmuk-grey: #f8f8f8;
+}
+
+.site-header {
+  background-color: var(--cmuk-white);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  width: 100%;
+  border-bottom: 2px solid var(--cmuk-black); /* Strong brutalist line */
+}
+
+/* 2. Top Bars - High Contrast */
+.header-top-bar {
+  background-color: var(--cmuk-black);
+  color: var(--cmuk-white);
+  text-align: center;
+  padding: 10px 0;
+  font-[10px] font-black uppercase tracking-[0.4em];
+}
+
+.contact-us-bar {
+  background-color: var(--cmuk-grey);
+  text-align: center;
+  padding: 8px 0;
+  font-[9px] font-black uppercase tracking-[0.2em];
+  border-bottom: 1px solid var(--cmuk-border);
+}
+
+/* 3. Main Header Layout */
+.header-main {
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr; /* Center-weighted for Logo */
+  align-items: center;
+  padding: 20px 40px;
+  background: white;
+}
+
+.header-fulllogo img {
+  width: 180px; /* Precise sizing */
+  filter: contrast(1.1);
+}
+
+/* 4. Search Bar - Technical Command Style */
+.search-container {
+  max-width: 600px;
+  position: relative;
+}
+
+#search-input {
+  width: 100%;
+  padding: 12px 0;
+  border: none;
+  border-bottom: 1px solid var(--cmuk-black);
+  background: transparent;
+  font-[12px] font-bold uppercase tracking-widest;
+  text-align: center;
+  border-radius: 0;
+}
+
+#search-input:focus {
+  border-bottom-width: 3px;
+  outline: none;
+}
+
+/* 5. Navigation - The Archive Menu */
+.navbar {
+  border-bottom: 1px solid var(--cmuk-border);
+  padding: 15px 0;
+}
+
+.nav-menu {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+}
+
+.nav-item a {
+  font-[11px] font-black uppercase tracking-[0.2em];
+  color: var(--cmuk-black);
+  transition: opacity 0.3s;
+}
+
+.nav-item a:hover {
+  opacity: 0.4;
+}
+
+/* 6. Mega Menu - The Grid Overlay */
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100vw; /* Full Screen Mega Menu */
+  background: var(--cmuk-white);
+  border-bottom: 2px solid var(--cmuk-black);
+  padding: 60px 10%;
+  display: none;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 40px;
+  box-shadow: none; /* Removed soft shadow */
+}
+
+.dropdown-heading {
+  font-[10px] font-black uppercase tracking-[0.4em] text-slate-400 mb-6;
+}
+
+.dropdown-section li a {
+  font-size: 13px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+/* 7. Icons & Utilities */
+.header-icons {
+  display: flex;
+  gap: 20px;
+  justify-content: flex-end;
+}
+
+.header-icons img {
+  height: 18px;
+  filter: grayscale(1);
+  transition: filter 0.3s;
+}
+
+.header-icons a:hover img {
+  filter: grayscale(0);
+}
+
+.currency-button {
+  font-[10px] font-black uppercase tracking-widest;
+  border: 1px solid var(--cmuk-black);
+  padding: 5px 12px;
+}

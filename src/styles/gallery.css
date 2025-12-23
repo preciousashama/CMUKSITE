@@ -1,0 +1,126 @@
+/* =================== THE INFINITE ARCHIVE (GALLERY) =================== */
+
+:root {
+  --cmuk-black: #000000;
+  --cmuk-white: #ffffff;
+  --cmuk-border: #eeeeee;
+  --gutter: 2px; /* Tight gutters create a 'solid wall' effect */
+  --anim-speed-base: 40s; /* Slightly faster for energy */
+}
+
+body.gallery-page {
+  background-color: var(--cmuk-black); /* Dark background for focus */
+  overflow: hidden;
+}
+
+/* 2. Container - Full Bleed */
+.gallery-container {
+  display: flex;
+  gap: var(--gutter);
+  padding: 0; /* Remove padding for edge-to-edge look */
+  height: 100vh;
+  width: 100%;
+  background-color: var(--cmuk-black);
+}
+
+/* 3. Optimized Columns - The "Film Strip" Effect */
+.gallery-column {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  will-change: transform;
+}
+
+/* Sharp Column Count Control */
+@media (max-width: 1024px) {
+  .gallery-column:nth-child(3),
+  .gallery-column:nth-child(4) { display: none; }
+}
+
+/* 4. Motion Logic - Smooth & Relentless */
+.gallery-column:nth-child(odd) { animation: moveDown var(--anim-speed-base) linear infinite; }
+.gallery-column:nth-child(even) { animation: moveUp calc(var(--anim-speed-base) + 10s) linear infinite; }
+
+/* Slow down on hover - Interactive Focus */
+.gallery-container:hover .gallery-column {
+  animation-play-state: paused;
+}
+
+@keyframes moveDown {
+  from { transform: translateY(-50%); }
+  to { transform: translateY(0%); }
+}
+
+@keyframes moveUp {
+  from { transform: translateY(0%); }
+  to { transform: translateY(-50%); }
+}
+
+/* 5. Modern Gallery Items - The Lookbook Slate */
+.gallery-item {
+  width: 100%;
+  margin-bottom: var(--gutter);
+  background: var(--cmuk-black);
+  border-radius: 0; /* Brutalist sharp edges */
+  overflow: hidden;
+  position: relative;
+  filter: grayscale(1); /* Start in Archive Grey */
+  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.gallery-item:hover {
+  filter: grayscale(0); /* Pop into life */
+  cursor: crosshair; /* Technical cursor */
+  z-index: 10;
+}
+
+.gallery-item img {
+  width: 100%;
+  height: auto;
+  display: block;
+  transition: transform 1.2s ease;
+}
+
+.gallery-item:hover img {
+  transform: scale(1.1); /* Subtle zoom inward */
+}
+
+/* Description as Metadata Overlay */
+.gallery-item .description {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 20px;
+  background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+  color: var(--cmuk-white);
+  font-[9px] font-black uppercase tracking-[0.3em];
+  opacity: 0; /* Hide until hover */
+  transform: translateY(10px);
+  transition: all 0.4s ease;
+}
+
+.gallery-item:hover .description {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* 6. Lightbox - The Examination Room */
+.modal {
+  background-color: rgba(0, 0, 0, 0.98);
+  backdrop-filter: blur(20px);
+}
+
+.modal-content {
+  border-radius: 0;
+  border: 1px solid rgba(255,255,255,0.1);
+  box-shadow: 0 0 100px rgba(0,0,0,1);
+}
+
+.close-btn {
+  font-family: 'Inter', sans-serif;
+  font-weight: 200;
+  right: 40px;
+  top: 40px;
+  mix-blend-mode: difference;
+}
