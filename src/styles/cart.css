@@ -1,0 +1,189 @@
+/* =================== THE COLLECTION MANIFEST (CART) =================== */
+:root {
+  --cmuk-black: #000000;
+  --cmuk-white: #ffffff;
+  --cmuk-accent: #2563eb; /* Keep the blue but use it sparingly as an accent */
+  --cmuk-border: #eeeeee;
+  --cmuk-text-muted: #64748b;
+  --cmuk-transition: 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+/* Scoped Header - More Industrial */
+.cartHeader {
+  padding: 6rem 1.5rem 4rem;
+  text-align: left; /* Aligned with our Archive headers */
+  max-width: 1280px;
+  margin: 0 auto;
+  border-bottom: 2px solid var(--cmuk-black);
+}
+
+.cartHeader h1 {
+  font-size: clamp(3rem, 8vw, 6rem);
+  font-weight: 950;
+  font-style: italic;
+  letter-spacing: -0.06em;
+  line-height: 0.8;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.cartHeader p {
+  text-[10px] font-black uppercase tracking-[0.4em] text-slate-400 mt-4;
+}
+
+/* Grid Layout */
+.layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0; /* Remove gap to create a "seamed" look */
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0;
+}
+
+@media (min-width: 1024px) {
+  .layout {
+    grid-template-columns: 1fr 450px;
+    border-left: 1px solid var(--cmuk-border);
+    border-right: 1px solid var(--cmuk-border);
+  }
+}
+
+/* Product Card - Architectural & Clean */
+.productCard {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 3rem 1.5rem;
+  background: white;
+  border-bottom: 1px solid var(--cmuk-border);
+  transition: var(--cmuk-transition);
+}
+
+@media (min-width: 640px) {
+  .productCard {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+}
+
+.productCard:hover {
+  background: #fafafa;
+}
+
+.productImage {
+  width: 160px; /* Larger for detail */
+  aspect-ratio: 4/5;
+  object-fit: cover;
+  border-radius: 0; /* Sharp edges for streetwear feel */
+  background: #f8f8f8;
+  filter: grayscale(1);
+  transition: filter 0.5s;
+}
+
+.productCard:hover .productImage {
+  filter: grayscale(0);
+}
+
+/* Info Section */
+.productInfo {
+  flex-grow: 1;
+}
+
+.productName {
+  font-size: 1.25rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.5rem;
+}
+
+.productMeta {
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--cmuk-text-muted);
+  letter-spacing: 0.1em;
+  display: flex;
+  gap: 1.5rem;
+}
+
+/* Qty Wrapper - Minimalist */
+.qtyWrapper {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--cmuk-black);
+  padding: 0;
+  border-radius: 0;
+  margin-top: 1.5rem;
+  width: fit-content;
+}
+
+.qtyBtn {
+  padding: 0.75rem 1rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-weight: 900;
+}
+
+.qtyInput {
+  width: 50px;
+  border-left: 1px solid var(--cmuk-black);
+  border-right: 1px solid var(--cmuk-black);
+  text-align: center;
+  font-weight: 900;
+  font-size: 12px;
+}
+
+/* Sticky Summary - High Contrast */
+.summaryCard {
+  position: sticky;
+  top: 0;
+  height: 100vh; /* Full height sidebar */
+  background: var(--cmuk-black);
+  color: white;
+  padding: 4rem 3rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.summaryRow {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  font-[10px] font-black uppercase tracking-widest opacity-60;
+}
+
+.summaryTotal {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  font-size: 2rem;
+  font-weight: 900;
+  font-style: italic;
+}
+
+.checkoutBtn {
+  width: 100%;
+  background: white;
+  color: var(--cmuk-black);
+  padding: 2rem;
+  border-radius: 0;
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  border: none;
+  cursor: pointer;
+  transition: var(--cmuk-transition);
+  margin-top: 3rem;
+}
+
+.checkoutBtn:hover {
+  background: var(--cmuk-accent);
+  color: white;
+}
