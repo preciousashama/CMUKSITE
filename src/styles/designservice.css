@@ -1,0 +1,149 @@
+/* =================== STUDIO INTAKE SYSTEM =================== */
+
+:root {
+  --cmuk-black: #000000;
+  --cmuk-white: #ffffff;
+  --cmuk-accent: #2563eb; /* CMUK Royal Blue */
+  --cmuk-border: #eeeeee;
+  --cmuk-status-done: #000000;
+  --cmuk-transition: 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+body {
+  background-color: var(--cmuk-white);
+  color: var(--cmuk-black);
+  letter-spacing: -0.01em;
+}
+
+/* 2. Brutalist Header */
+.header {
+  text-align: left; /* Shift away from centered "standard" look */
+  padding: 100px 0 60px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.header h1 {
+  font-size: clamp(3.5rem, 10vw, 7rem);
+  font-weight: 950;
+  font-style: italic;
+  letter-spacing: -0.06em;
+  text-transform: uppercase;
+  line-height: 0.85;
+  margin-bottom: 2rem;
+}
+
+/* 3. Technical Progress Tracker */
+.progress-bar {
+  width: 100%;
+  height: 2px; /* Thin, technical line */
+  background-color: var(--cmuk-border);
+  margin: 4rem 0;
+  padding: 0;
+  overflow: visible;
+}
+
+.progress-fill {
+  height: 2px;
+  background: var(--cmuk-black);
+  position: relative;
+  transition: width 1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.progress-fill::after {
+  content: 'STAGE_READY';
+  position: absolute;
+  right: 0;
+  top: -20px;
+  font-[8px] font-black uppercase tracking-widest;
+}
+
+/* 4. Steps Layout (Grid) */
+.steps-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1px; /* Grid-seam effect */
+  background-color: var(--cmuk-border);
+  border: 1px solid var(--cmuk-border);
+}
+
+.step-card {
+  background: var(--cmuk-white);
+  padding: 3rem;
+  border-radius: 0; /* Sharp edges */
+  transition: var(--cmuk-transition);
+  text-align: left;
+}
+
+.step-card:hover {
+  background: #fafafa;
+  transform: none; /* Keep it grounded, no "bouncy" tech feel */
+}
+
+/* Completed State - High Contrast */
+.step-card.completed {
+  background-color: var(--cmuk-black);
+  color: var(--cmuk-white);
+}
+
+.step-number {
+  width: auto;
+  height: auto;
+  background: none;
+  color: var(--cmuk-black);
+  font-size: 3rem;
+  font-weight: 900;
+  font-style: italic;
+  margin-bottom: 1rem;
+}
+
+.step-card.completed .step-number {
+  color: var(--cmuk-white);
+}
+
+/* 5. Modern Forms */
+.form-group label {
+  font-[9px] font-black uppercase tracking-[0.3em] text-slate-400;
+}
+
+.form-group input, 
+.form-group select, 
+.form-group textarea {
+  border: none;
+  border-bottom: 2px solid var(--cmuk-border);
+  border-radius: 0;
+  padding: 1rem 0;
+  font-weight: 700;
+  background: transparent;
+}
+
+.form-group input:focus {
+  border-color: var(--cmuk-black);
+  box-shadow: none;
+}
+
+/* 6. Utility Buttons */
+.step-button {
+  background: var(--cmuk-black);
+  color: white;
+  border-radius: 0; /* Sharp edges */
+  padding: 1.5rem 3rem;
+  font-[10px] font-black uppercase tracking-widest;
+  border: 1px solid var(--cmuk-black);
+}
+
+.step-button:hover:not(:disabled) {
+  background: white;
+  color: var(--cmuk-black);
+}
+
+/* 7. Modal (Archive Style) */
+.modal {
+  background-color: rgba(0, 0, 0, 0.95);
+  backdrop-filter: blur(10px);
+}
+
+.modal-content {
+  border-radius: 0;
+  padding: 60px;
+}

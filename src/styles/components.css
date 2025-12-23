@@ -1,0 +1,137 @@
+/* =================== THE ARCHIVE UTILITY COMPONENTS =================== */
+
+:root {
+  --cmuk-black: #000000;
+  --cmuk-white: #ffffff;
+  --cmuk-accent: #2563eb;
+  --cmuk-border: #e2e8f0;
+  --cmuk-success: #00ff00; /* Neon/Matrix green instead of sage green */
+  --cmuk-error: #ff0000;
+}
+
+/* =================== IMAGE PLACEHOLDERS (Editorial style) =================== */
+.placeholder-img {
+  background-color: #fafafa;
+  border: 1px solid var(--cmuk-border);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: var(--cmuk-black);
+  text-transform: uppercase;
+  font-[10px] font-black tracking-[0.4em];
+  aspect-ratio: 1 / 1;
+  position: relative;
+}
+
+/* The "Large" Hero Placeholder */
+.placeholder-img.large- {
+  min-height: 500px;
+  background-color: var(--cmuk-black);
+  color: var(--cmuk-white);
+  border: none;
+  font-size: 12px;
+  overflow: hidden;
+}
+
+.placeholder-img.large-::before {
+  content: 'CMUK_ARCHIVE_SYSTEM';
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  opacity: 0.3;
+}
+
+/* =================== BUTTONS (Heavyweight) =================== */
+.btn, .primary-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--cmuk-black);
+  color: white;
+  padding: 1.25rem 2.5rem;
+  border: 1px solid var(--cmuk-black);
+  border-radius: 0; /* Sharp corners */
+  cursor: pointer;
+  font-[11px] font-black uppercase tracking-[0.2em];
+  transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.btn:hover, .primary-btn:hover {
+  background-color: transparent;
+  color: var(--cmuk-black);
+  padding-left: 3rem; /* Slight slide effect */
+}
+
+.secondary-btn {
+  background-color: transparent;
+  color: var(--cmuk-black);
+  border-color: var(--cmuk-border);
+}
+
+/* =================== MESSAGES (Monochromatic Alerts) =================== */
+.message, .review-message {
+  padding: 20px;
+  margin-bottom: 2rem;
+  border-radius: 0;
+  font-[10px] font-black uppercase tracking-widest text-left;
+  border-left: 5px solid var(--cmuk-black);
+}
+
+.message.error {
+  background-color: #fff5f5;
+  color: var(--cmuk-error);
+  border-left-color: var(--cmuk-error);
+}
+
+.message.success {
+  background-color: #f5fff5;
+  color: #000; /* Keeping text black for readability */
+  border-left-color: var(--cmuk-success);
+}
+
+/* =================== TOAST NOTIFICATIONS (The "Blueprint" Toast) =================== */
+.toast-container {
+  position: fixed;
+  top: 40px; /* Toasts from top feel more premium */
+  right: 40px;
+  z-index: 1000;
+}
+
+.toast {
+  background-color: var(--cmuk-black);
+  color: white;
+  padding: 24px 32px;
+  border-radius: 0;
+  margin-bottom: 10px;
+  min-width: 320px;
+  box-shadow: 20px 20px 0px rgba(0,0,0,0.05); /* Blocky shadow */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-[10px] font-black uppercase tracking-[0.2em];
+}
+
+.toast.success { border-bottom: 4px solid var(--cmuk-success); }
+.toast.error { border-bottom: 4px solid var(--cmuk-error); }
+
+/* =================== IMAGE UPLOAD PREVIEWS =================== */
+.image-preview-item {
+  width: 120px;
+  height: 150px;
+  border-radius: 0;
+  border: 1px solid var(--cmuk-border);
+  filter: grayscale(1);
+  transition: filter 0.3s;
+}
+
+.image-preview-item:hover {
+  filter: grayscale(0);
+}
+
+.remove-image {
+  background-color: var(--cmuk-black);
+  border-radius: 0;
+  width: 24px;
+  height: 24px;
+}
