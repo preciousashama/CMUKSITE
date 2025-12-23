@@ -173,3 +173,81 @@ body {
   color: var(--cmuk-black);
   z-index: 10;
 }
+
+.studio-sidebar {
+  background: var(--cmuk-white);
+  border-left: 1px solid var(--cmuk-black);
+  display: flex;
+  flex-direction: column;
+  padding: 40px 20px;
+  height: 100%;
+}
+
+.sidebar-header {
+  margin-bottom: 40px;
+}
+
+.protocol-label {
+  font-[8px] font-black tracking-[0.4em] text-slate-400 block mb-2;
+}
+
+.tab-switcher {
+  display: flex;
+  border-bottom: 1px solid var(--cmuk-border);
+  margin-bottom: 30px;
+}
+
+.tab-switcher button {
+  flex: 1;
+  background: none;
+  border: none;
+  padding: 10px 0;
+  font-[10px] font-black tracking-widest;
+  cursor: pointer;
+  opacity: 0.3;
+}
+
+.tab-switcher button.active {
+  opacity: 1;
+  border-bottom: 2px solid var(--cmuk-black);
+}
+
+.control-group label {
+  font-[9px] font-black tracking-[0.3em] block mb-4;
+}
+
+.color-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+.color-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.color-item button {
+  width: 24px;
+  height: 24px;
+  border-radius: 0;
+  cursor: pointer;
+}
+
+.color-item span {
+  font-[9px] font-bold;
+}
+
+.sidebar-footer {
+  margin-top: auto;
+  border-top: 1px solid var(--cmuk-border);
+  padding-top: 20px;
+}
+
+.price-readout {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  font-[10px] font-black tracking-widest;
+}
