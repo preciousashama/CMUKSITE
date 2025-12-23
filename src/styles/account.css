@@ -1,0 +1,155 @@
+/* =================== THE ARCHIVE: REVIEWS =================== */
+:root {
+  --brand-black: #000000;
+  --brand-white: #ffffff;
+  --brand-primary: #ffb400; /* Keeping her rating gold */
+  --brand-grey: #f5f5f5;
+  --brand-text-muted: #666666;
+}
+
+.all-reviews-header {
+  max-width: 1400px; /* Wider for that editorial feel */
+  margin: 0 auto;
+  padding: 80px 24px 40px;
+}
+
+.all-reviews-header h1 {
+  font-size: 5rem; /* Massive impact */
+  font-weight: 900;
+  text-transform: uppercase;
+  font-style: italic;
+  letter-spacing: -0.05em;
+  line-height: 0.8;
+  margin-bottom: 40px;
+  text-align: left; /* Streetwear brands usually avoid center-aligning headers */
+}
+
+/* =================== REVIEW FILTERS (Upgraded) =================== */
+.review-filters {
+  background-color: var(--brand-white);
+  padding: 0 0 40px 0;
+  border-bottom: 2px solid var(--brand-black);
+  border-radius: 0; /* Remove soft corners */
+  margin-bottom: 60px;
+  box-shadow: none; /* Flat design is more premium */
+}
+
+.filter-row {
+  display: flex;
+  gap: 40px;
+}
+
+.filter-group label {
+  text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-2 block;
+}
+
+.filter-group select {
+  border: none;
+  border-bottom: 2px solid #eee;
+  border-radius: 0;
+  padding: 10px 0;
+  font-weight: 900;
+  text-transform: uppercase;
+  font-size: 12px;
+  cursor: pointer;
+  transition: border-color 0.3s;
+}
+
+.filter-group select:focus {
+  border-color: var(--brand-black);
+  outline: none;
+}
+
+/* =================== GRID LAYOUT (Modern Masonry feel) =================== */
+.reviews-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 1px; /* Creates a grid-line effect */
+  background-color: #eee; /* Grid line color */
+  border: 1px solid #eee;
+}
+
+/* =================== REVIEW ITEM (Minimalist Card) =================== */
+.review-item {
+  background-color: var(--brand-white);
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  transition: transform 0.3s ease;
+}
+
+.review-item:hover {
+  background-color: #fafafa;
+}
+
+.review-product {
+  background-color: var(--brand-black);
+  color: var(--brand-white);
+  padding: 4px 12px;
+  border-radius: 0;
+  display: inline-block;
+  font-[10px] font-black uppercase tracking-widest mb-6 w-fit;
+}
+
+.review-title {
+  font-size: 1.5rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  margin-bottom: 10px;
+}
+
+.review-rating {
+  font-size: 1rem;
+  color: var(--brand-primary);
+  letter-spacing: 2px;
+  margin-bottom: 20px;
+}
+
+.review-content {
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--brand-text-muted);
+  font-weight: 500;
+}
+
+/* =================== BUTTONS (Streetwear Style) =================== */
+.add-review-btn, .submit-review-btn {
+  background-color: var(--brand-black);
+  color: var(--brand-white);
+  padding: 20px 40px;
+  border-radius: 0; /* Sharp edges */
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  transition: all 0.3s;
+  border: 1px solid var(--brand-black);
+}
+
+.add-review-btn:hover, .submit-review-btn:hover {
+  background-color: transparent;
+  color: var(--brand-black);
+}
+
+.helpful-btn, .not-helpful-btn {
+  background-color: transparent;
+  border: 1px solid #eee;
+  border-radius: 0;
+  text-[10px] font-black uppercase tracking-widest;
+  padding: 10px 20px;
+}
+
+/* =================== IMAGE THUMBNAILS =================== */
+.review-image-thumbnail {
+  width: 100px;
+  height: 100px;
+  border-radius: 0;
+  filter: grayscale(100%);
+  transition: filter 0.3s;
+}
+
+.review-image-thumbnail:hover {
+  filter: grayscale(0%);
+}
