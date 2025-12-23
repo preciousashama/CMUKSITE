@@ -1,29 +1,29 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 
-// 1. STYLE IMPORTS (Hierarchy is critical)
-import "@/styles/global.css";      // System Tokens & Resets
-import "@/styles/components.css";  // Shared UI (Buttons, Cards)
-import "@/styles/header.css";      // Navigation System
-import "@/styles/footer.css";      // Global Footer
+// 1. GLOBAL STYLES (Order is critical for CSS override logic)
+import "@/styles/global.css";      // 1st: System variables & Resets
+import "@/styles/components.css";  // 2nd: Shared UI (Buttons, Cards, Tags)
+import "@/styles/header.css";      // 3rd: Navigation logic
+import "@/styles/footer.css";      // 4th: Footer manifest
 
-// 2. CONTEXT PROVIDERS
+// 2. CONTEXT & STATE
 import { CartProvider } from "@/context/CartContext";
 
-// 3. COMPONENTS
+// 3. GLOBAL COMPONENTS
 import Header from "@/components/Header";
-// import Footer from "@/components/Footer"; // Uncomment once Footer.tsx is created
+import Footer from "@/components/Footer";
 
-// Initialize the Inter font (Modern, Technical, Sharp)
+// Initialize the Inter font (Sharp, Technical, Modern)
 const inter = Inter({ 
   subsets: ["latin"], 
   weight: ["400", "500", "700", "900"],
-  variable: '--font-inter', // Allows us to use it in CSS variables
+  variable: '--font-inter', 
 });
 
 export const metadata: Metadata = {
   title: "CMUK | ARCHIVE SYSTEM",
-  description: "High-end 3D garment design, archive, and manufacturing services.",
+  description: "High-end 3D garment design, archive development, and manufacturing.",
   viewport: "width=device-width, initial-scale=1, maximum-scale=1",
 };
 
@@ -35,22 +35,22 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.variable} ${inter.className}`}>
-        {/* Wrapping the entire app in CartProvider allows every page to access the collection */}
+        {/* The CartProvider allows "Saving to Archive" from any page/component */}
         <CartProvider>
           
-          {/* Header is global - consistent brand handshake */}
+          {/* Persistent Branding & Navigation */}
           <Header />
 
-          {/* Main content area */}
-          <main id="main-content">
+          {/* Page Content Injection Point */}
+          <main id="main-content" style={{ minHeight: '80vh' }}>
             {children}
           </main>
 
-          {/* Global Footer */}
-          {/* <Footer /> */}
+          {/* Persistent Footer & System Metadata */}
+          <Footer />
 
-          {/* Toast Container for system notifications (Success/Error) */}
-          <div id="toast-root" className="toast-container" />
+          {/* Root element for Toast notifications/Popups */}
+          <div id="toast-root" />
           
         </CartProvider>
       </body>
