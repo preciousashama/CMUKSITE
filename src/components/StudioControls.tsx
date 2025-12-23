@@ -2,6 +2,24 @@
 
 import React, { useState } from 'react';
 
+
+import { useCart } from '@/context/CartContext';
+
+// Inside your StudioControls component:
+const { addToCart } = useCart();
+
+const handleSaveDesign = () => {
+  addToCart({
+    id: `CUSTOM-${Date.now()}`, // Unique ID for 3D designs
+    name: "CUSTOM_ARCHIVE_TEE",
+    price: 85.00,
+    quantity: 1,
+    imageUrl: "/assets/placeholder-tee.png",
+    config: { color: activeColor, texture: activeTexture }
+  });
+  alert("DESIGN_SAVED_TO_ARCHIVE");
+};
+
 interface StudioControlsProps {
   onColorChange: (color: string) => void;
   onTextureChange: (texture: string) => void;
