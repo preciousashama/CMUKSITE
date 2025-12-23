@@ -1,26 +1,18 @@
 [
   {
-    "id": "CMUK-T-001",
-    "name": "ARCHIVE_BOX_TEE",
+    "id": "TEE-01",
+    "name": "ARCHIVE_BOX_TEE_V1",
     "price": 65.00,
-    "category": "BASICS_01",
-    "imageUrl": "https://placehold.co/600x600/000000/FFFFFF/png?text=ARCHIVE+TEE",
+    "category": "TOPS",
+    "imageUrl": "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=1000&auto=format&fit=crop",
     "isNew": true
   },
   {
-    "id": "CMUK-H-004",
-    "name": "HEAVY_PROTOTYPE_HOODIE",
+    "id": "HD-01",
+    "name": "HEAVY_WEIGHT_HOODIE_04",
     "price": 120.00,
-    "category": "ARCHIVE_SERIES",
-    "imageUrl": "https://placehold.co/600x600/000000/FFFFFF/png?text=PROTO+HOODIE",
+    "category": "OUTERWEAR",
+    "imageUrl": "https://images.unsplash.com/photo-1556821840-3a63f95609a7?q=80&w=1000&auto=format&fit=crop",
     "isNew": false
-  },
-  {
-    "id": "CMUK-T-009",
-    "name": "SYSTEM_CORE_TANK",
-    "price": 45.00,
-    "category": "BASICS_01",
-    "imageUrl": "https://placehold.co/600x600/000000/FFFFFF/png?text=CORE+TANK",
-    "isNew": true
   }
 ]
