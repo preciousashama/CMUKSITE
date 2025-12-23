@@ -45,3 +45,19 @@ export default function RootLayout({
     </html>
   );
 }
+
+import { CartProvider } from "@/context/CartContext";
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en">
+      <body>
+        <CartProvider>
+          <Header />
+          <main>{children}</main>
+          <Footer />
+        </CartProvider>
+      </body>
+    </html>
+  );
+}
