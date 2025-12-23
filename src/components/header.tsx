@@ -2,67 +2,69 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
+import { useCart } from '@/context/CartContext';
 
 const Header = () => {
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [currency, setCurrency] = useState('USD');
+  const { cartCount } = useCart();
   const [isCurrencyOpen, setIsCurrencyOpen] = useState(false);
+  const [currency, setCurrency] = useState('USD');
 
   return (
     <header className="site-header">
-      {/* 1. Top Announcement Bar */}
+      {/* 1. TOP BAR - High Contrast Announcement */}
       <div className="header-top-bar">
-        FREE ARCHIVE ACCESS FOR GLOBAL MEMBERS — STAGE_04 READY
+        SYSTEM_STATUS: STAGE_04_ARCHIVE_ACCESS_ACTIVE — GLOBAL_SHIPPING_ENABLED
       </div>
 
-      {/* 2. Main Header Section */}
+      {/* 2. MAIN HEADER - The Layout we built in CSS */}
       <div className="header-main">
-        {/* Left: Search Command */}
+        {/* LEFT: Search Terminal */}
         <div className="header-left">
           <div className="search-container">
-            <input 
-              type="search" 
-              id="search-input" 
-              placeholder="SEARCH_ARCHIVE..." 
-              onFocus={() => setIsSearchOpen(true)}
-            />
+            <form id="search-form">
+              <input 
+                type="search" 
+                id="search-input" 
+                placeholder="SEARCH_ARCHIVE..." 
+              />
+            </form>
           </div>
         </div>
 
-        {/* Center: Branding */}
+        {/* CENTER: Branding */}
         <div className="header-fulllogo">
           <Link href="/">
-            <h4 className="brand-heading">CMUK</h4>
+             {/* Using text for now to ensure it works, replace with <img> if needed */}
+             <h1 className="logo" style={{ letterSpacing: '8px', fontWeight: 900 }}>CMUK</h1>
           </Link>
         </div>
 
-        {/* Right: Utilities */}
+        {/* RIGHT: Utilities & Collection Count */}
         <div className="header-right">
           <div className="header-icons">
-            <Link href="/account">
-              <span className="icon-text">ACCOUNT</span>
-            </Link>
-            <Link href="/wishlist">
-              <span className="icon-text">WISHLIST</span>
-            </Link>
-            <Link href="/cart">
-              <span className="icon-text">COLLECTION (0)</span>
+            <Link href="/login">
+              <span>ACCOUNT</span>
             </Link>
             
-            {/* Currency Selector */}
+            <Link href="/cart" className="collection-link">
+              <span>COLLECTION ({cartCount})</span>
+            </Link>
+
+            {/* Currency Selector Logic */}
             <div className="currency-dropdown-wrapper">
               <button 
-                className="currency-button"
+                className="currency-button" 
                 onClick={() => setIsCurrencyOpen(!isCurrencyOpen)}
               >
-                {currency} ▼
+                <span className="currency-code">{currency}</span>
+                <span className="arrow">▼</span>
               </button>
+              
               {isCurrencyOpen && (
                 <div className="currency-dropdown">
-                  <button onClick={() => {setCurrency('USD'); setIsCurrencyOpen(false)}}>USD - $</button>
-                  <button onClick={() => {setCurrency('GBP'); setIsCurrencyOpen(false)}}>GBP - £</button>
-                  <button onClick={() => {setCurrency('EUR'); setIsCurrencyOpen(false)}}>EUR - €</button>
+                  <button onClick={() => {setCurrency('USD'); setIsCurrencyOpen(false)}}>USD - $ (UNITED STATES)</button>
+                  <button onClick={() => {setCurrency('GBP'); setIsCurrencyOpen(false)}}>GBP - £ (UNITED KINGDOM)</button>
+                  <button onClick={() => {setCurrency('EUR'); setIsCurrencyOpen(false)}}>EUR - € (EUROPE)</button>
                 </div>
               )}
             </div>
@@ -70,48 +72,50 @@ const Header = () => {
         </div>
       </div>
 
-      {/* 3. Navigation & Mega Menu */}
+      {/* 3. NAVIGATION - Triggering the Mega Menu */}
       <nav className="navbar">
         <ul className="nav-menu">
+          
+          {/* THE MEGA MENU ITEM */}
           <li className="nav-item has-dropdown">
             <Link href="/shop">COLLECTIONS</Link>
-            {/* The Mega Menu Wrapper */}
             <div className="dropdown-menu">
               <div className="dropdown-section">
-                <span className="dropdown-heading">BASICS_01</span>
+                <span className="dropdown-heading">CORE_ARCHIVE</span>
                 <ul>
-                  <li><Link href="/shop/tees">OVERSIZED TEES</Link></li>
-                  <li><Link href="/shop/hoodies">HEAVY HOODIES</Link></li>
-                  <li><Link href="/shop/tanks">CORE TANKS</Link></li>
+                  <li><Link href="/shop/tees">OVERSIZED_TEES</Link></li>
+                  <li><Link href="/shop/hoodies">HEAVY_HOODIES</Link></li>
+                  <li><Link href="/shop/tanks">CORE_TANKS</Link></li>
                 </ul>
               </div>
               <div className="dropdown-section">
-                <span className="dropdown-heading">ARCHIVE_SERIES</span>
+                <span className="dropdown-heading">DEVELOPMENT</span>
                 <ul>
-                  <li><Link href="/shop/limited">2024 DROP A</Link></li>
-                  <li><Link href="/shop/concepts">CONCEPT WEAR</Link></li>
-                  <li><Link href="/shop/prototypes">PROTOTYPES</Link></li>
+                  <li><Link href="/studio">3D_DESIGN_STUDIO</Link></li>
+                  <li><Link href="/prototypes">PROTOTYPE_SERIES</Link></li>
+                  <li><Link href="/custom">BESPOKE_REQUEST</Link></li>
                 </ul>
               </div>
               <div className="dropdown-section">
-                <span className="dropdown-heading">DESIGN_STUDIO</span>
+                <span className="dropdown-heading">METADATA</span>
                 <ul>
-                  <li><Link href="/studio">3D CUSTOMIZER</Link></li>
-                  <li><Link href="/design-service">BESPOKE SERVICE</Link></li>
-                </ul>
-              </div>
-              <div className="dropdown-section">
-                <span className="dropdown-heading">META_DATA</span>
-                <ul>
-                  <li><Link href="/lookbook">LOOKBOOK</Link></li>
-                  <li><Link href="/gallery">COMMUNITY GALLERY</Link></li>
+                  <li><Link href="/gallery">COMMUNITY_GALLERY</Link></li>
+                  <li><Link href="/lookbook">SEASON_04_LOOKBOOK</Link></li>
+                  <li><Link href="/manifesto">BRAND_MANIFESTO</Link></li>
                 </ul>
               </div>
             </div>
           </li>
-          <li className="nav-item"><Link href="/studio">3D_STUDIO</Link></li>
-          <li className="nav-item"><Link href="/gallery">GALLERY</Link></li>
-          <li className="nav-item"><Link href="/about">MANIFESTO</Link></li>
+
+          <li className="nav-item">
+            <Link href="/studio">3D_STUDIO</Link>
+          </li>
+          <li className="nav-item">
+            <Link href="/gallery">GALLERY</Link>
+          </li>
+          <li className="nav-item">
+            <Link href="/manifesto">MANIFESTO</Link>
+          </li>
         </ul>
       </nav>
     </header>
