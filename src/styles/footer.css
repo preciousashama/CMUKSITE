@@ -1,133 +1,201 @@
-/* =================== THE ARCHIVE CREDITS (FOOTER) =================== */
-
-:root {
-  --cmuk-black: #000000;
-  --cmuk-white: #ffffff;
-  --cmuk-border: #eeeeee;
-  --cmuk-text-muted: #94a3b8;
-  --cmuk-transition: 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-}
+/* =================== THE ARCHIVE FOOTER =================== */
 
 .site-footer {
   background-color: var(--cmuk-white);
+  border-top: 2px solid var(--cmuk-black); /* Strong brutalist line */
   color: var(--cmuk-black);
-  padding: 100px 0 40px;
-  border-top: 2px solid var(--cmuk-black); /* Strong top border */
+  margin-top: 120px;
+  width: 100%;
+  font-family: var(--font-inter), system-ui, sans-serif;
 }
 
-.container {
-  max-width: 1400px; /* Wider for editorial feel */
+.footer-container {
+  max-width: 1400px;
   margin: 0 auto;
   padding: 0 40px;
 }
 
-/* Big Brand Impact */
-.footer-brand {
-  margin-bottom: 80px;
-  text-align: left;
+/* 1. NEWSLETTER / SYSTEM JOIN */
+.footer-top {
+  padding: 80px 0;
+  border-bottom: 1px solid #eeeeee;
 }
 
-.footer-brand h4 {
-  font-size: clamp(4rem, 15vw, 12rem); /* Massive scaling logo */
+.footer-heading {
+  font-size: clamp(2rem, 5vw, 3.5rem);
   font-weight: 950;
   font-style: italic;
-  letter-spacing: -0.08em;
-  line-height: 0.7;
+  letter-spacing: -0.05em;
   text-transform: uppercase;
-  margin: 0;
-  opacity: 0.05; /* Faded watermark effect */
-  pointer-events: none;
-  user-select: none;
+  margin-bottom: 30px;
+  line-height: 0.9;
 }
 
-/* Footer Grid - Clean & Technical */
-.footer-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 40px;
-  margin-bottom: 100px;
+.newsletter-form {
+  display: flex;
+  max-width: 600px;
+  border-bottom: 2px solid var(--cmuk-black);
+  transition: border-color 0.3s ease;
 }
 
-@media (min-width: 1024px) {
-  .footer-grid {
-    grid-template-columns: 2fr 1fr 1fr 1fr; /* Asymmetric grid */
-  }
+.newsletter-form:focus-within {
+  border-color: #888;
 }
 
-.footer-col h5 {
-  font-[10px] font-black uppercase tracking-[0.4em] text-slate-400 mb-8;
-}
-
-.tagline {
-  font-size: 1.25rem;
-  font-weight: 700;
-  line-height: 1.4;
-  color: var(--cmuk-black);
-  max-width: 300px;
-  margin-bottom: 2rem;
-  font-style: normal; /* Removed italic from tagline */
-}
-
-/* Links - Sharp & Monochromatic */
-.footer-links li {
-  margin-bottom: 12px;
-}
-
-.footer-links a {
+.newsletter-form input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: 20px 0;
   font-size: 12px;
   font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.2em;
+  outline: none;
   color: var(--cmuk-black);
-  transition: var(--cmuk-transition);
-  display: inline-block;
+}
+
+.newsletter-form button {
+  background: none;
+  border: none;
+  font-size: 11px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  cursor: pointer;
+  padding: 0 20px;
+  transition: transform 0.3s ease;
+}
+
+.newsletter-form button:hover {
+  transform: translateX(10px);
+}
+
+/* 2. MAIN FOOTER GRID */
+.footer-main {
+  padding: 80px 0;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 80px;
+}
+
+.footer-logo {
+  font-size: 2.5rem;
+  font-weight: 950;
+  letter-spacing: 0.3em;
+  margin-bottom: 25px;
+  line-height: 1;
+}
+
+.footer-bio {
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1.8;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  opacity: 0.6;
+  max-width: 300px;
+}
+
+.footer-label {
+  display: block;
+  font-size: 9px;
+  font-weight: 950;
+  text-transform: uppercase;
+  letter-spacing: 0.4em;
+  color: #aaaaaa;
+  margin-bottom: 30px;
+}
+
+.footer-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-links li {
+  margin-bottom: 15px;
+}
+
+.footer-links a {
+  text-decoration: none;
+  color: var(--cmuk-black);
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  transition: opacity 0.3s ease;
 }
 
 .footer-links a:hover {
-  color: var(--cmuk-black);
-  transform: translateX(10px); /* Subtle slide hover */
-  text-decoration: none;
+  opacity: 0.4;
 }
 
-/* Footer Bottom - Metadata Style */
+/* 3. BOTTOM BAR - Legal & System Meta */
 .footer-bottom {
-  padding-top: 40px;
-  border-top: 1px solid var(--cmuk-border);
+  padding: 40px 0;
+  border-top: 1px solid #eeeeee;
+  font-size: 8px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+}
+
+.bottom-flex {
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
   gap: 20px;
 }
 
-@media (min-width: 768px) {
-  .footer-bottom {
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: flex-end;
+.system-status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.status-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  background-color: #00ff00; /* System Active Green */
+  border-radius: 50%;
+  box-shadow: 0 0 8px rgba(0, 255, 0, 0.5);
+}
+
+.timestamp {
+  color: #aaaaaa;
+}
+
+/* 4. RESPONSIVE DESIGN */
+@media (max-width: 1024px) {
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
   }
 }
 
-/* Technical Language Selector */
-.region-select {
-  border: 1px solid var(--cmuk-black);
-  border-radius: 0;
-  padding: 8px 16px;
-  font-[10px] font-black uppercase tracking-widest;
-  appearance: none;
-  cursor: pointer;
-}
+@media (max-width: 768px) {
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: 50px;
+  }
+  
+  .footer-heading {
+    font-size: 2.5rem;
+  }
+  
+  .bottom-flex {
+    flex-direction: column;
+    text-align: center;
+    gap: 15px;
+  }
 
-/* Grayscale Payment Methods */
-.payment-methods {
-  filter: grayscale(1) contrast(1.2);
-  opacity: 0.5;
-  transition: opacity 0.3s;
-}
-
-.payment-methods:hover {
-  opacity: 1;
-}
-
-.copyright {
-  font-[9px] font-black uppercase tracking-[0.3em] text-slate-400;
-  text-align: left;
+  .footer-top {
+    padding: 60px 0;
+  }
 }
